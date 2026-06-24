@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (БЕЗ ИЗМЕНЕНИЙ, такие же как в предыдущей версии) ===== */
+        /* ===== СТИЛИ (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -99,6 +99,8 @@
         .btn-video.success:hover { background: rgba(75, 179, 75, 0.08); }
         .btn-video.link-btn { color: #f39c12; }
         .btn-video.link-btn:hover { background: rgba(243, 156, 18, 0.08); }
+        .btn-video.local-btn { color: #8e44ad; }
+        .btn-video.local-btn:hover { background: rgba(142, 68, 173, 0.08); }
         .file-input-hidden { display: none; }
         .history-section { margin-top: 28px; padding-top: 16px; border-top: 2px solid #e4e6e8; }
         .history-title { font-weight: 600; font-size: 17px; color: #1a1a1a; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
@@ -120,8 +122,9 @@
         .modal-title { font-weight: 600; font-size: 17px; color: #000000; }
         .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #6f7987; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; touch-action: manipulation; font-family: inherit; }
         .modal-close:hover { background: #edeef0; }
-        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; flex-direction: column; }
+        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .modal-body video { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; display: block; max-height: 60vh; object-fit: contain; }
+        .modal-body iframe { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: none; display: block; max-height: 60vh; }
         .modal-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; flex-shrink: 0; }
         .modal-footer .btn-primary { background: #2d6a9f; color: #fff; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
         .modal-footer .btn-primary:hover { background: #1e4f7a; }
@@ -236,6 +239,7 @@
     </div>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО -->
 <div class="modal-overlay" id="videoModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -243,10 +247,11 @@
             <button class="modal-close" id="modalClose">✕</button>
         </div>
         <div class="modal-body">
-            <video id="modalVideo" controls playsinline preload="metadata">
+            <video id="modalVideo" controls playsinline preload="metadata" style="display:none;">
                 <source id="modalSource" src="" type="video/mp4">
                 Ваш браузер не поддерживает видео.
             </video>
+            <iframe id="modalIframe" src="" style="display:none; width:100%; aspect-ratio:16/9; border:none; border-radius:8px; background:#000;" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="modal-footer">
             <button class="btn-primary" id="modalCloseBtn">Закрыть</button>
@@ -256,23 +261,26 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '0.3'; // меняйте при каждом обновлении
+    const APP_VERSION = '0.5'; // меняйте при каждом обновлении
+
+    // Отображаем версию
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
-    // ===== SERVICE WORKER =====
+    // ===== SERVICE WORKER с автоматическим обновлением =====
+    // При регистрации добавляем параметр версии, чтобы загружать новый sw.js
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js')
+            navigator.serviceWorker.register(`sw.js?v=${APP_VERSION}`)
                 .then(reg => {
-                    console.log('SW зарегистрирован');
-                    // Принудительно проверяем обновления
+                    console.log('SW зарегистрирован, версия:', APP_VERSION);
+                    // Проверяем обновления
                     reg.update();
                 })
                 .catch(err => console.log('SW ошибка:', err));
         });
     }
 
-    // ===== ДАННЫЕ ПРОГРАММЫ =====
+    // ===== ДАННЫЕ ПРОГРАММЫ (без изменений) =====
     const data = {
         "Стоя": {
             "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
@@ -336,7 +344,10 @@
                                     <span class="icon">🔗</span> Ссылка
                                 </button>
                                 <button class="btn-video success play-video" data-target="${inputId}" style="display:none;">
-                                    <span class="icon">▶</span> Смотреть
+                                    <span class="icon">▶</span> Смотреть (ссылка)
+                                </button>
+                                <button class="btn-video local-btn play-local-video" data-target="${inputId}" style="display:none;">
+                                    <span class="icon">📁</span> Смотреть локально
                                 </button>
                             </span>
                         </div>
@@ -427,7 +438,6 @@
         });
 
         renderHistory();
-        // Обновляем все кнопки видео
         document.querySelectorAll('.file-input-hidden').forEach(input => {
             updateVideoButtons(input.id);
         });
@@ -502,7 +512,7 @@
         updateAll();
     }
 
-    // ===== РАБОТА С INDEXEDDB (ДЛЯ ВИДЕОФАЙЛОВ) =====
+    // ===== РАБОТА С INDEXEDDB =====
     const DB_NAME = 'RoninVideoDB';
     const STORE_NAME = 'videos';
     let db = null;
@@ -575,8 +585,8 @@
         });
     }
 
-    // ===== ВИДЕО (глобальное состояние) =====
-    const videoMap = new Map(); // id -> { url, fromDB }
+    // ===== ВИДЕО =====
+    const videoMap = new Map();
     let selectedCount = 0;
 
     function updateSelectedCount() {
@@ -585,27 +595,31 @@
     }
 
     function updateVideoButtons(id) {
-        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        const playLinkBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        const playLocalBtn = document.querySelector(`.play-local-video[data-target="${id}"]`);
         const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
         const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
-        if (!playBtn || !linkBtn) return;
+        if (!playLinkBtn || !playLocalBtn || !linkBtn) return;
 
         const link = getLink(id);
         const hasFile = videoMap.has(id);
 
-        // Кнопка "Ссылка" всегда видна
         linkBtn.style.display = 'inline-flex';
 
         if (link) {
-            playBtn.style.display = 'inline-flex';
-            playBtn.dataset.type = 'link';
-            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
-        } else if (hasFile) {
-            playBtn.style.display = 'inline-flex';
-            playBtn.dataset.type = 'file';
-            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
+            playLinkBtn.style.display = 'inline-flex';
+            playLinkBtn.dataset.type = 'link';
+            playLinkBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
         } else {
-            playBtn.style.display = 'none';
+            playLinkBtn.style.display = 'none';
+        }
+
+        if (hasFile) {
+            playLocalBtn.style.display = 'inline-flex';
+            playLocalBtn.dataset.type = 'file';
+            playLocalBtn.innerHTML = '<span class="icon">📁</span> Смотреть локально';
+        } else {
+            playLocalBtn.style.display = 'none';
         }
 
         if (pickBtn) {
@@ -617,7 +631,7 @@
         }
     }
 
-    // ===== ОБРАБОТЧИКИ СОБЫТИЙ (делегирование) =====
+    // ===== ОБРАБОТЧИКИ =====
     document.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-video');
         if (!target) return;
@@ -634,7 +648,7 @@
 
         if (target.classList.contains('link-video')) {
             const currentLink = getLink(id);
-            let newLink = prompt('Введите ссылку на видео (YouTube, Яндекс.Диск и т.д.)\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
+            let newLink = prompt('Введите ссылку на видео (YouTube, Vimeo, или прямой URL):\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
             if (newLink !== null) {
                 if (newLink.trim() === '') newLink = null;
                 setLink(id, newLink);
@@ -646,29 +660,33 @@
         if (target.classList.contains('play-video')) {
             const link = getLink(id);
             if (link) {
-                window.open(link, '_blank');
+                const title = document.getElementById(id)?.dataset.label || 'Техника';
+                openModalForLink(link, title);
                 return;
             }
+            alert('Ссылка не установлена.');
+            return;
+        }
+
+        if (target.classList.contains('play-local-video')) {
             const stored = videoMap.get(id);
             if (stored && stored.url) {
                 const input = document.getElementById(id);
                 const title = input ? input.dataset.label : 'Техника';
-                openModal(stored.url, title);
+                openModalForFile(stored.url, title);
                 return;
             }
-            alert('Видео не прикреплено. Загрузите файл или вставьте ссылку.');
+            alert('Локальное видео не найдено.');
             return;
         }
     });
 
-    // Обработка выбора файла
     document.addEventListener('change', async function(e) {
         const input = e.target.closest('.file-input-hidden');
         if (!input) return;
         const id = input.id;
         const file = input.files[0];
         if (!file) {
-            // Удаляем файл
             try {
                 await deleteVideoFromDB(id);
                 if (videoMap.has(id)) {
@@ -679,17 +697,13 @@
                     updateSelectedCount();
                     updateVideoButtons(id);
                 }
-            } catch (err) {
-                console.error('Ошибка удаления файла:', err);
-            }
+            } catch (err) { console.error(err); }
             return;
         }
 
         try {
-            // Сохраняем файл
             await saveVideoToDB(id, file);
             const url = URL.createObjectURL(file);
-            // Если уже был файл, удаляем старый URL
             if (videoMap.has(id)) {
                 const old = videoMap.get(id);
                 if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
@@ -700,8 +714,8 @@
             updateSelectedCount();
             updateVideoButtons(id);
         } catch (err) {
-            console.error('Ошибка сохранения файла:', err);
-            alert('Не удалось сохранить видео. Попробуйте ещё раз.');
+            console.error(err);
+            alert('Не удалось сохранить видео.');
         }
     });
 
@@ -709,22 +723,70 @@
     const modal = document.getElementById('videoModal');
     const videoEl = document.getElementById('modalVideo');
     const sourceEl = document.getElementById('modalSource');
+    const iframeEl = document.getElementById('modalIframe');
     const titleEl = document.getElementById('modalTitle');
     const closeBtn = document.getElementById('modalClose');
     const closeBtn2 = document.getElementById('modalCloseBtn');
 
-    function openModal(url, title) {
+    function openModalForFile(url, title) {
+        videoEl.style.display = 'block';
+        iframeEl.style.display = 'none';
         sourceEl.src = url;
         videoEl.load();
-        titleEl.textContent = title || 'Видео';
+        titleEl.textContent = title || 'Видео (локальное)';
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         videoEl.play().catch(() => {});
     }
 
+    function openModalForLink(link, title) {
+        const isYouTube = link.match(/(youtube\.com|youtu\.be)/);
+        const isVimeo = link.match(/vimeo\.com/);
+
+        if (isYouTube || isVimeo) {
+            let embedUrl = link;
+            if (isYouTube) {
+                const videoId = link.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
+                }
+            } else if (isVimeo) {
+                const videoId = link.match(/vimeo\.com\/(\d+)/);
+                if (videoId) {
+                    embedUrl = `https://player.vimeo.com/video/${videoId[1]}`;
+                }
+            }
+            iframeEl.src = embedUrl;
+            iframeEl.style.display = 'block';
+            videoEl.style.display = 'none';
+            titleEl.textContent = title || 'Видео (ссылка)';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        } else {
+            const ext = link.split('.').pop().toLowerCase();
+            if (['mp4', 'webm', 'ogg', 'mov', 'avi'].includes(ext)) {
+                videoEl.style.display = 'block';
+                iframeEl.style.display = 'none';
+                sourceEl.src = link;
+                videoEl.load();
+                titleEl.textContent = title || 'Видео (прямая ссылка)';
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                videoEl.play().catch(() => {});
+            } else {
+                window.open(link, '_blank');
+            }
+        }
+    }
+
     function closeModal() {
         modal.classList.remove('active');
         videoEl.pause();
+        sourceEl.src = '';
+        videoEl.load();
+        iframeEl.src = '';
+        videoEl.style.display = 'none';
+        iframeEl.style.display = 'none';
         document.body.style.overflow = '';
     }
 
@@ -743,7 +805,6 @@
         }
     });
 
-    // Добавляем счётчик видео в статистику
     const statsBar = document.querySelector('.stats-bar');
     const videoStat = document.createElement('div');
     videoStat.className = 'stats-item';
@@ -758,7 +819,6 @@
             loadHistory();
             loadLinks();
 
-            // Восстанавливаем файлы из IndexedDB
             const inputs = document.querySelectorAll('.file-input-hidden');
             for (const input of inputs) {
                 const id = input.id;
@@ -767,12 +827,10 @@
                     videoMap.set(id, { url, fromDB: true });
                     selectedCount++;
                 }
-                // Обновляем кнопки
                 updateVideoButtons(id);
             }
             updateSelectedCount();
 
-            // Синхронизация прогресса
             let needsSync = false;
             for (let i = 0; i < totalItems; i++) {
                 if (progress[i]) {
