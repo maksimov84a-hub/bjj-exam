@@ -71,9 +71,27 @@
         .btn-reset { background: transparent; border: 1px solid #555; color: #cccccc; padding: 2px 12px; border-radius: 12px; font-size: 12px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all 0.15s; touch-action: manipulation; line-height: 20px; display: inline-flex; align-items: center; gap: 4px; }
         .btn-reset:hover { background: #333; border-color: #888; }
         .btn-reset:active { transform: scale(0.97); }
-        .stats-bar { display: flex; gap: 20px; padding: 12px 0 16px; border-bottom: 1px solid #e4e6e8; margin-bottom: 16px; flex-wrap: wrap; }
-        .stats-item { display: flex; align-items: baseline; gap: 4px; font-size: 13px; color: #6f7987; }
-        .stats-item .num { font-weight: 600; font-size: 15px; color: #000000; }
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            padding: 12px 0 16px;
+            border-bottom: 1px solid #e4e6e8;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: baseline;
+        }
+        .stats-item {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+            font-size: 13px;
+            color: #6f7987;
+        }
+        .stats-item .num {
+            font-weight: 600;
+            font-size: 15px;
+            color: #000000;
+        }
         .section { margin-bottom: 24px; }
         .section-title { font-weight: 600; font-size: 18px; color: #000000; padding: 8px 0 6px; border-bottom: 2px solid #c0392b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .section-title .section-num { display: inline-block; background: #c0392b; color: #fff; font-size: 13px; font-weight: 600; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; flex-shrink: 0; }
@@ -283,6 +301,9 @@
         <div class="stats-item">
             <span class="num" id="remainingCount">50</span> осталось сдать
         </div>
+        <div class="stats-item">
+            <span class="num" id="linkCount">0</span> ссылок добавлено
+        </div>
         <div class="stats-item" style="margin-left:auto; color:#6f7987;">
             <span>📱 нажмите на номер, чтобы отметить</span>
         </div>
@@ -323,7 +344,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '0.6';
+    const APP_VERSION = '0.7';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER с версией =====
@@ -430,6 +451,7 @@
         if (saved) {
             try { videoLinks = JSON.parse(saved); } catch (e) { videoLinks = {}; }
         } else { videoLinks = {}; }
+        updateLinkCount();
     }
     function saveLinks() { localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks)); }
     function setLink(id, url) {
@@ -439,9 +461,16 @@
             delete videoLinks[id];
         }
         saveLinks();
+        updateLinkCount();
         updateVideoButtons(id);
     }
     function getLink(id) { return videoLinks[id] || null; }
+
+    function updateLinkCount() {
+        const count = Object.keys(videoLinks).length;
+        const el = document.getElementById('linkCount');
+        if (el) el.textContent = count;
+    }
 
     // ===== ПРОГРЕСС И ИСТОРИЯ =====
     function loadProgress() {
@@ -580,46 +609,45 @@
     }
 
     // ===== ОБРАБОТЧИКИ =====
-    // Клик по строке техники (переключение статуса)
     document.addEventListener('click', function(e) {
+        // Сначала проверяем клик по кнопке
+        const target = e.target.closest('.btn-video');
+        if (target) {
+            e.stopPropagation();
+            const id = target.dataset.target;
+            if (!id) return;
+
+            if (target.classList.contains('link-video')) {
+                const currentLink = getLink(id);
+                let newLink = prompt('Введите ссылку на видео (YouTube, Vimeo, Яндекс.Диск и т.д.):\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
+                if (newLink !== null) {
+                    if (newLink.trim() === '') newLink = null;
+                    setLink(id, newLink);
+                    updateVideoButtons(id);
+                }
+                return;
+            }
+
+            if (target.classList.contains('play-video')) {
+                const link = getLink(id);
+                if (link) {
+                    const title = document.querySelector(`[data-target="${id}"]`)?.closest('.tech-line')?.querySelector('.tech-name')?.textContent || 'Техника';
+                    openModal(link, title);
+                } else {
+                    alert('Ссылка не установлена.');
+                }
+                return;
+            }
+            return;
+        }
+
+        // Если не кнопка, проверяем клик по строке техники
         const li = e.target.closest('.tech-item');
         if (li) {
-            // Проверяем, не был ли клик по кнопке внутри
-            if (e.target.closest('.btn-video')) return;
             const idx = parseInt(li.dataset.idx, 10);
             if (!isNaN(idx)) {
                 toggleItem(idx);
             }
-            return;
-        }
-        // Обработка кнопок
-        const target = e.target.closest('.btn-video');
-        if (!target) return;
-        e.stopPropagation();
-
-        const id = target.dataset.target;
-        if (!id) return;
-
-        if (target.classList.contains('link-video')) {
-            const currentLink = getLink(id);
-            let newLink = prompt('Введите ссылку на видео (YouTube, Vimeo, Яндекс.Диск и т.д.):\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
-            if (newLink !== null) {
-                if (newLink.trim() === '') newLink = null;
-                setLink(id, newLink);
-                updateVideoButtons(id);
-            }
-            return;
-        }
-
-        if (target.classList.contains('play-video')) {
-            const link = getLink(id);
-            if (link) {
-                const title = document.querySelector(`[data-target="${id}"]`)?.closest('.tech-line')?.querySelector('.tech-name')?.textContent || 'Техника';
-                openModal(link, title);
-                return;
-            }
-            alert('Ссылка не установлена.');
-            return;
         }
     });
 
