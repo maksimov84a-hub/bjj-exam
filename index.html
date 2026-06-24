@@ -9,12 +9,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== ВСЕ СТИЛИ (без изменений, только добавим класс для индикации ссылки) ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* ===== СТИЛИ (те же, что и раньше, без изменений) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
             background: #f0f2f5;
@@ -49,469 +45,72 @@
             border-radius: 12px 12px 0 0;
             position: relative;
         }
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 10%;
-            right: 10%;
-            height: 3px;
-            background: #c0392b;
-        }
-        .header-logo {
-            text-align: center;
-            letter-spacing: 4px;
-        }
-        .header-logo .ronin {
-            font-size: 38px;
-            font-weight: 700;
-            color: #ffffff;
-            text-transform: uppercase;
-            line-height: 1;
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            text-shadow: 2px 2px 0 #c0392b, 4px 4px 0 rgba(0,0,0,0.3);
-        }
-        .header-logo .family {
-            font-size: 38px;
-            font-weight: 700;
-            color: #c0392b;
-            text-transform: uppercase;
-            line-height: 1;
-            font-family: 'Impact', 'Arial Black', sans-serif;
-            text-shadow: 2px 2px 0 #ffffff, 4px 4px 0 rgba(0,0,0,0.2);
-        }
-        .header-sub {
-            font-size: 14px;
-            color: #cccccc;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-top: 6px;
-            font-weight: 300;
-            border-top: 1px solid #333;
-            padding-top: 6px;
-            width: 100%;
-            text-align: center;
-        }
-        .header-sub span {
-            background: #1a1a1a;
-            padding: 0 12px;
-        }
-        .header-meta {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 10px;
-            font-size: 13px;
-            color: #aaaaaa;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .badge-blue {
-            display: inline-block;
-            background: linear-gradient(135deg, #0d2b45, #1a4a6e);
-            color: #ffffff;
-            padding: 2px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1.5px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            border: 1px solid #3a7ca5;
-            line-height: 28px;
-        }
-        .header-meta .progress-text {
-            color: #dddddd;
-            font-weight: 400;
-        }
-        .btn-reset {
-            background: transparent;
-            border: 1px solid #555;
-            color: #cccccc;
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 400;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.15s;
-            touch-action: manipulation;
-            line-height: 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .btn-reset:hover {
-            background: #333;
-            border-color: #888;
-        }
-        .btn-reset:active {
-            transform: scale(0.97);
-        }
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            padding: 12px 0 16px;
-            border-bottom: 1px solid #e4e6e8;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .stats-item {
-            display: flex;
-            align-items: baseline;
-            gap: 4px;
-            font-size: 13px;
-            color: #6f7987;
-        }
-        .stats-item .num {
-            font-weight: 600;
-            font-size: 15px;
-            color: #000000;
-        }
-        .section {
-            margin-bottom: 24px;
-        }
-        .section-title {
-            font-weight: 600;
-            font-size: 18px;
-            color: #000000;
-            padding: 8px 0 6px;
-            border-bottom: 2px solid #c0392b;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .section-title .section-num {
-            display: inline-block;
-            background: #c0392b;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 600;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 26px;
-            flex-shrink: 0;
-        }
-        .subsection {
-            margin: 12px 0 8px;
-        }
-        .subsection-title {
-            font-weight: 600;
-            font-size: 15px;
-            color: #1a1a1a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 6px 0 6px 12px;
-            border-left: 4px solid #c0392b;
-            border-bottom: 1px solid #e4e6e8;
-            margin-bottom: 8px;
-            background: #f8f9fa;
-            border-radius: 0 4px 4px 0;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        ul li {
-            position: relative;
-            padding: 8px 0 8px 48px;
-            border-bottom: 1px solid #f2f3f5;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-height: 44px;
-            cursor: pointer;
-            transition: background 0.15s;
-            user-select: none;
-            -webkit-tap-highlight-color: rgba(192, 57, 43, 0.15);
-            counter-increment: tech-counter;
-        }
-        ul li:last-child {
-            border-bottom: none;
-        }
-        ul li::before {
-            content: counter(tech-counter);
-            position: absolute;
-            left: 0;
-            top: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            color: #6f7987;
-            background: #f2f3f5;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            line-height: 32px;
-            transition: all 0.2s;
-            pointer-events: none;
-        }
-        ul li.done::before {
-            background: #27ae60;
-            color: #ffffff;
-            content: "✓";
-            font-size: 18px;
-        }
-        ul li.done .tech-name {
-            color: #27ae60;
-        }
-        ul li:hover {
-            background: #f8f9fa;
-        }
-        .tech-line {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 6px 12px;
-            pointer-events: none;
-        }
-        .tech-name {
-            font-weight: 400;
-            font-size: 15px;
-            color: #000000;
-            flex: 1 1 auto;
-            word-break: break-word;
-            transition: color 0.2s;
-        }
-        .video-btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-left: auto;
-            flex-shrink: 0;
-            pointer-events: auto;
-        }
-        .btn-video {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            font-size: 13px;
-            font-weight: 500;
-            padding: 4px 12px;
-            border-radius: 8px;
-            border: none;
-            background: transparent;
-            color: #2d6a9f;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.15s;
-            touch-action: manipulation;
-            user-select: none;
-            white-space: nowrap;
-            min-height: 32px;
-        }
-        .btn-video:hover {
-            background: rgba(45, 106, 159, 0.08);
-        }
-        .btn-video:active {
-            transform: scale(0.97);
-        }
-        .btn-video .icon {
-            font-size: 16px;
-            line-height: 1;
-        }
-        .btn-video.primary {
-            color: #2d6a9f;
-        }
-        .btn-video.primary:hover {
-            background: rgba(45, 106, 159, 0.08);
-        }
-        .btn-video.success {
-            color: #4bb34b;
-        }
-        .btn-video.success:hover {
-            background: rgba(75, 179, 75, 0.08);
-        }
-        .btn-video.link-btn {
-            color: #f39c12;
-        }
-        .btn-video.link-btn:hover {
-            background: rgba(243, 156, 18, 0.08);
-        }
-        .file-input-hidden {
-            display: none;
-        }
-        .history-section {
-            margin-top: 28px;
-            padding-top: 16px;
-            border-top: 2px solid #e4e6e8;
-        }
-        .history-title {
-            font-weight: 600;
-            font-size: 17px;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .history-empty {
-            color: #6f7987;
-            font-size: 14px;
-            padding: 8px 0;
-            text-align: center;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .history-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        .history-day {
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f2f5;
-        }
-        .history-day:last-child {
-            border-bottom: none;
-        }
-        .history-date {
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-        .history-day-items {
-            padding-left: 12px;
-        }
-        .history-item {
-            padding: 2px 0;
-            font-size: 14px;
-            color: #2c3e50;
-        }
-        .btn-clear-history {
-            background: transparent;
-            border: 1px solid #d0d4d8;
-            color: #6f7987;
-            padding: 2px 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: all 0.15s;
-            touch-action: manipulation;
-            line-height: 24px;
-            margin-left: auto;
-        }
-        .btn-clear-history:hover {
-            background: #f0f2f5;
-            border-color: #b0b8c0;
-        }
-        .btn-clear-history:active {
-            transform: scale(0.97);
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 16px;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 16px;
-            max-width: 720px;
-            width: 100%;
-            max-height: 90vh;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            animation: modalFade 0.2s ease;
-        }
-        @keyframes modalFade {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #edeef0;
-            flex-shrink: 0;
-        }
-        .modal-title {
-            font-weight: 600;
-            font-size: 17px;
-            color: #000000;
-        }
-        .modal-close {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: transparent;
-            color: #6f7987;
-            font-size: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s;
-            touch-action: manipulation;
-            font-family: inherit;
-        }
-        .modal-close:hover {
-            background: #edeef0;
-        }
-        .modal-body {
-            padding: 12px 0 0;
-            flex: 1 1 auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-body video {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 8px;
-            display: block;
-            max-height: 60vh;
-            object-fit: contain;
-        }
-        .modal-footer {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            padding-top: 12px;
-            flex-shrink: 0;
-        }
-        .modal-footer .btn-primary {
-            background: #2d6a9f;
-            color: #fff;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.15s;
-        }
-        .modal-footer .btn-primary:hover {
-            background: #1e4f7a;
-        }
+        .header::after { content: ''; position: absolute; bottom: -2px; left: 10%; right: 10%; height: 3px; background: #c0392b; }
+        .header-logo { text-align: center; letter-spacing: 4px; }
+        .header-logo .ronin { font-size: 38px; font-weight: 700; color: #ffffff; text-transform: uppercase; line-height: 1; font-family: 'Impact', 'Arial Black', sans-serif; text-shadow: 2px 2px 0 #c0392b, 4px 4px 0 rgba(0,0,0,0.3); }
+        .header-logo .family { font-size: 38px; font-weight: 700; color: #c0392b; text-transform: uppercase; line-height: 1; font-family: 'Impact', 'Arial Black', sans-serif; text-shadow: 2px 2px 0 #ffffff, 4px 4px 0 rgba(0,0,0,0.2); }
+        .header-sub { font-size: 14px; color: #cccccc; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; font-weight: 300; border-top: 1px solid #333; padding-top: 6px; width: 100%; text-align: center; }
+        .header-sub span { background: #1a1a1a; padding: 0 12px; }
+        .header-meta { display: flex; justify-content: center; gap: 16px; margin-top: 10px; font-size: 13px; color: #aaaaaa; letter-spacing: 1px; text-transform: uppercase; flex-wrap: wrap; align-items: center; }
+        .badge-blue { display: inline-block; background: linear-gradient(135deg, #0d2b45, #1a4a6e); color: #ffffff; padding: 2px 16px; border-radius: 20px; font-weight: 700; font-size: 14px; letter-spacing: 1.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); box-shadow: 0 2px 6px rgba(0,0,0,0.2); border: 1px solid #3a7ca5; line-height: 28px; }
+        .header-meta .progress-text { color: #dddddd; font-weight: 400; }
+        .btn-reset { background: transparent; border: 1px solid #555; color: #cccccc; padding: 2px 12px; border-radius: 12px; font-size: 12px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all 0.15s; touch-action: manipulation; line-height: 20px; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-reset:hover { background: #333; border-color: #888; }
+        .btn-reset:active { transform: scale(0.97); }
+        .stats-bar { display: flex; gap: 20px; padding: 12px 0 16px; border-bottom: 1px solid #e4e6e8; margin-bottom: 16px; flex-wrap: wrap; }
+        .stats-item { display: flex; align-items: baseline; gap: 4px; font-size: 13px; color: #6f7987; }
+        .stats-item .num { font-weight: 600; font-size: 15px; color: #000000; }
+        .section { margin-bottom: 24px; }
+        .section-title { font-weight: 600; font-size: 18px; color: #000000; padding: 8px 0 6px; border-bottom: 2px solid #c0392b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title .section-num { display: inline-block; background: #c0392b; color: #fff; font-size: 13px; font-weight: 600; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; flex-shrink: 0; }
+        .subsection { margin: 12px 0 8px; }
+        .subsection-title { font-weight: 600; font-size: 15px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 0 6px 12px; border-left: 4px solid #c0392b; border-bottom: 1px solid #e4e6e8; margin-bottom: 8px; background: #f8f9fa; border-radius: 0 4px 4px 0; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        ul li { position: relative; padding: 8px 0 8px 48px; border-bottom: 1px solid #f2f3f5; display: flex; flex-direction: column; gap: 4px; min-height: 44px; cursor: pointer; transition: background 0.15s; user-select: none; -webkit-tap-highlight-color: rgba(192, 57, 43, 0.15); counter-increment: tech-counter; }
+        ul li:last-child { border-bottom: none; }
+        ul li::before { content: counter(tech-counter); position: absolute; left: 0; top: 8px; font-weight: 500; font-size: 14px; color: #6f7987; background: #f2f3f5; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 32px; transition: all 0.2s; pointer-events: none; }
+        ul li.done::before { background: #27ae60; color: #ffffff; content: "✓"; font-size: 18px; }
+        ul li.done .tech-name { color: #27ae60; }
+        ul li:hover { background: #f8f9fa; }
+        .tech-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; pointer-events: none; }
+        .tech-name { font-weight: 400; font-size: 15px; color: #000000; flex: 1 1 auto; word-break: break-word; transition: color 0.2s; }
+        .video-btn-group { display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto; flex-shrink: 0; pointer-events: auto; }
+        .btn-video { display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 8px; border: none; background: transparent; color: #2d6a9f; cursor: pointer; font-family: inherit; transition: background 0.15s; touch-action: manipulation; user-select: none; white-space: nowrap; min-height: 32px; }
+        .btn-video:hover { background: rgba(45, 106, 159, 0.08); }
+        .btn-video:active { transform: scale(0.97); }
+        .btn-video .icon { font-size: 16px; line-height: 1; }
+        .btn-video.primary { color: #2d6a9f; }
+        .btn-video.primary:hover { background: rgba(45, 106, 159, 0.08); }
+        .btn-video.success { color: #4bb34b; }
+        .btn-video.success:hover { background: rgba(75, 179, 75, 0.08); }
+        .btn-video.link-btn { color: #f39c12; }
+        .btn-video.link-btn:hover { background: rgba(243, 156, 18, 0.08); }
+        .file-input-hidden { display: none; }
+        .history-section { margin-top: 28px; padding-top: 16px; border-top: 2px solid #e4e6e8; }
+        .history-title { font-weight: 600; font-size: 17px; color: #1a1a1a; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .history-empty { color: #6f7987; font-size: 14px; padding: 8px 0; text-align: center; background: #f8f9fa; border-radius: 8px; }
+        .history-list { max-height: 500px; overflow-y: auto; }
+        .history-day { padding: 8px 0; border-bottom: 1px solid #f0f2f5; }
+        .history-day:last-child { border-bottom: none; }
+        .history-date { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; font-size: 14px; }
+        .history-day-items { padding-left: 12px; }
+        .history-item { padding: 2px 0; font-size: 14px; color: #2c3e50; }
+        .btn-clear-history { background: transparent; border: 1px solid #d0d4d8; color: #6f7987; padding: 2px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.15s; touch-action: manipulation; line-height: 24px; margin-left: auto; }
+        .btn-clear-history:hover { background: #f0f2f5; border-color: #b0b8c0; }
+        .btn-clear-history:active { transform: scale(0.97); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #ffffff; border-radius: 16px; padding: 16px; max-width: 720px; width: 100%; max-height: 90vh; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; animation: modalFade 0.2s ease; }
+        @keyframes modalFade { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #edeef0; flex-shrink: 0; }
+        .modal-title { font-weight: 600; font-size: 17px; color: #000000; }
+        .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #6f7987; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; touch-action: manipulation; font-family: inherit; }
+        .modal-close:hover { background: #edeef0; }
+        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; flex-direction: column; }
+        .modal-body video { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; display: block; max-height: 60vh; object-fit: contain; }
+        .modal-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; flex-shrink: 0; }
+        .modal-footer .btn-primary { background: #2d6a9f; color: #fff; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+        .modal-footer .btn-primary:hover { background: #1e4f7a; }
         @media (max-width: 600px) {
             body { padding: 8px 6px; }
             .container { padding: 12px; }
@@ -646,7 +245,7 @@
 </div>
 
 <script>
-    // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
+    // ===== ДАННЫЕ ПРОГРАММЫ =====
     const data = {
         "Стоя": {
             "Броски": [
@@ -791,7 +390,7 @@
     // ===== СОСТОЯНИЕ =====
     const PROGRESS_KEY = 'ronin_progress';
     const HISTORY_KEY = 'ronin_history';
-    const LINKS_KEY = 'ronin_video_links'; // объект: { "video-1": "https://..." }
+    const LINKS_KEY = 'ronin_video_links';
 
     let progress = new Array(totalItems).fill(false);
     let history = [];
@@ -801,18 +400,14 @@
     function loadLinks() {
         const saved = localStorage.getItem(LINKS_KEY);
         if (saved) {
-            try {
-                videoLinks = JSON.parse(saved);
-            } catch (e) { videoLinks = {}; }
+            try { videoLinks = JSON.parse(saved); } catch (e) { videoLinks = {}; }
         } else {
             videoLinks = {};
         }
     }
-
     function saveLinks() {
         localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks));
     }
-
     function setLink(id, url) {
         if (url && url.trim() !== '') {
             videoLinks[id] = url.trim();
@@ -822,34 +417,8 @@
         saveLinks();
         updateVideoButtons(id);
     }
-
     function getLink(id) {
         return videoLinks[id] || null;
-    }
-
-    // Обновление кнопок видео для конкретной техники
-    function updateVideoButtons(id) {
-        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
-        const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
-        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
-        if (!playBtn) return;
-
-        const link = getLink(id);
-        // Проверяем также наличие файла в IndexedDB (будет позже)
-        // Если есть ссылка, показываем "Смотреть" и делаем её активной
-        if (link) {
-            playBtn.style.display = 'inline-flex';
-            playBtn.dataset.link = link; // сохраняем для быстрого доступа
-            playBtn.dataset.type = 'link';
-            // Меняем текст, чтобы показать, что это ссылка
-            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
-        } else {
-            // Проверяем, есть ли файл в videoMap (будет установлено позже)
-            // Пока просто скрываем, если нет файла
-            // Но файл может быть загружен позже, поэтому не скрываем, если файл есть
-            // Лучше проверить наличие в videoMap, но videoMap ещё не инициализирован
-            // Мы будем вызывать эту функцию после инициализации videoMap
-        }
     }
 
     // ===== ПРОГРЕСС И ИСТОРИЯ =====
@@ -864,11 +433,9 @@
             } catch (e) {}
         }
     }
-
     function saveProgress() {
         localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
     }
-
     function loadHistory() {
         const saved = localStorage.getItem(HISTORY_KEY);
         if (saved) {
@@ -887,7 +454,6 @@
             } catch (e) {}
         }
     }
-
     function saveHistory() {
         localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
     }
@@ -931,12 +497,10 @@
 
     function renderHistory() {
         const container = document.getElementById('historyContainer');
-
         if (history.length === 0) {
             container.innerHTML = `<div class="history-empty">Пока нет изученных техник. Отмечайте их, нажимая на номер.</div>`;
             return;
         }
-
         const groups = new Map();
         for (const entry of history) {
             const dateObj = new Date(entry.date);
@@ -948,21 +512,17 @@
             }
             groups.get(key).push(entry);
         }
-
         const sortedDates = Array.from(groups.keys()).sort((a, b) => b.localeCompare(a));
-
         let html = '<div class="history-list">';
         for (const dateKey of sortedDates) {
             const entries = groups.get(dateKey);
             entries.sort((a, b) => a.index - b.index);
             const parts = dateKey.split('-');
             const dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
-
             let itemsHtml = '';
             for (const entry of entries) {
                 itemsHtml += `<div class="history-item">${entry.tech}</div>`;
             }
-
             html += `
                 <div class="history-day">
                     <div class="history-date">📅 ${dateStr}</div>
@@ -1066,22 +626,8 @@
         });
     }
 
-    // ===== ОБРАБОТЧИКИ =====
-    document.querySelectorAll('.tech-item').forEach(li => {
-        li.addEventListener('click', function(e) {
-            if (e.target.closest('.btn-video') || e.target.closest('.file-input-hidden')) {
-                return;
-            }
-            const idx = parseInt(this.dataset.idx, 10);
-            toggleItem(idx);
-        });
-    });
-
-    document.getElementById('resetProgressBtn').addEventListener('click', resetProgressOnly);
-    document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
-
-    // ===== ВИДЕО =====
-    const videoMap = new Map(); // id -> { url, file, fromDB }
+    // ===== ВИДЕО (глобальные переменные) =====
+    const videoMap = new Map(); // id -> { url, fromDB }
     let selectedCount = 0;
 
     function updateSelectedCount() {
@@ -1089,114 +635,7 @@
         if (el) el.textContent = selectedCount;
     }
 
-    // Обработка выбора файла
-    document.querySelectorAll('.file-input-hidden').forEach(input => {
-        const id = input.id;
-        const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
-        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
-        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
-
-        if (!pickBtn || !playBtn || !linkBtn) return;
-
-        // Кнопка "Выбрать"
-        pickBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            input.click();
-        });
-
-        // Обработка выбора файла
-        input.addEventListener('change', async function(e) {
-            const file = this.files[0];
-            if (!file) {
-                // Удаляем файл из IndexedDB
-                await deleteVideoFromDB(id);
-                if (videoMap.has(id)) {
-                    const old = videoMap.get(id);
-                    if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
-                    videoMap.delete(id);
-                    selectedCount--;
-                    updateSelectedCount();
-                }
-                // Обновляем кнопки
-                updateVideoButtons(id);
-                return;
-            }
-
-            // Сохраняем файл в IndexedDB
-            await saveVideoToDB(id, file);
-            const url = URL.createObjectURL(file);
-            videoMap.set(id, { url, file, fromDB: false });
-            selectedCount++;
-            updateSelectedCount();
-
-            // Обновляем кнопки
-            updateVideoButtons(id);
-            // Показываем кнопку "Смотреть" (если нет ссылки)
-            const link = getLink(id);
-            if (!link) {
-                playBtn.style.display = 'inline-flex';
-                playBtn.dataset.type = 'file';
-                playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
-            }
-            pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
-        });
-
-        // Кнопка "Ссылка"
-        linkBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const currentLink = getLink(id);
-            let newLink = prompt('Введите ссылку на видео (YouTube, Яндекс.Диск и т.д.)\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
-            if (newLink !== null) {
-                // Если пользователь нажал "Отмена", newLink === null, ничего не делаем
-                if (newLink.trim() === '') {
-                    newLink = null;
-                }
-                setLink(id, newLink);
-                // Обновляем кнопку "Смотреть"
-                updateVideoButtons(id);
-                // Если ссылка есть, скрываем кнопку "Смотреть" от файла (если файла нет)
-                // Но файл может быть, поэтому просто обновляем
-                if (newLink) {
-                    playBtn.style.display = 'inline-flex';
-                    playBtn.dataset.type = 'link';
-                    playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
-                } else {
-                    // Проверяем, есть ли файл
-                    if (videoMap.has(id)) {
-                        playBtn.style.display = 'inline-flex';
-                        playBtn.dataset.type = 'file';
-                        playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
-                    } else {
-                        playBtn.style.display = 'none';
-                    }
-                }
-            }
-        });
-
-        // Кнопка "Смотреть"
-        playBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const link = getLink(id);
-            if (link) {
-                // Открываем ссылку в новой вкладке
-                window.open(link, '_blank');
-                return;
-            }
-            // Если ссылки нет, проверяем файл
-            const stored = videoMap.get(id);
-            if (stored && stored.url) {
-                const title = input.dataset.label || 'Техника';
-                openModal(stored.url, title);
-                return;
-            }
-            alert('Видео не прикреплено. Загрузите файл или вставьте ссылку.');
-        });
-    });
-
-    // Функция обновления кнопок (вызывается при загрузке и после изменения ссылки/файла)
+    // Функция обновления кнопки "Смотреть" для одного id
     function updateVideoButtons(id) {
         const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
         const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
@@ -1216,7 +655,98 @@
         } else {
             playBtn.style.display = 'none';
         }
+        // Если есть ссылка или файл, меняем текст кнопки "Выбрать" на "Изменить"
+        if (pickBtn && (link || hasFile)) {
+            pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
+        } else if (pickBtn) {
+            pickBtn.innerHTML = '<span class="icon">📁</span> Выбрать';
+        }
     }
+
+    // ===== ОБРАБОТЧИКИ (делегирование) =====
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('.btn-video');
+        if (!target) return;
+        e.stopPropagation();
+
+        const id = target.dataset.target;
+        if (!id) return;
+
+        // Кнопка "Выбрать"
+        if (target.classList.contains('pick-video')) {
+            const input = document.getElementById(id);
+            if (input) {
+                input.click();
+            }
+            return;
+        }
+
+        // Кнопка "Ссылка"
+        if (target.classList.contains('link-video')) {
+            const currentLink = getLink(id);
+            let newLink = prompt('Введите ссылку на видео (YouTube, Яндекс.Диск и т.д.)\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
+            if (newLink !== null) {
+                if (newLink.trim() === '') {
+                    newLink = null;
+                }
+                setLink(id, newLink);
+                // Если ссылка добавлена, и есть файл – кнопка "Смотреть" покажет ссылку
+                // Если ссылка удалена, и есть файл – покажет файл
+                updateVideoButtons(id);
+            }
+            return;
+        }
+
+        // Кнопка "Смотреть"
+        if (target.classList.contains('play-video')) {
+            const link = getLink(id);
+            if (link) {
+                // Открываем ссылку в новой вкладке
+                window.open(link, '_blank');
+                return;
+            }
+            const stored = videoMap.get(id);
+            if (stored && stored.url) {
+                const input = document.getElementById(id);
+                const title = input ? input.dataset.label : 'Техника';
+                openModal(stored.url, title);
+                return;
+            }
+            alert('Видео не прикреплено. Загрузите файл или вставьте ссылку.');
+            return;
+        }
+    });
+
+    // Обработка выбора файла (через событие change)
+    document.addEventListener('change', function(e) {
+        const input = e.target.closest('.file-input-hidden');
+        if (!input) return;
+        const id = input.id;
+        const file = input.files[0];
+        if (!file) {
+            // Файл удалён
+            deleteVideoFromDB(id).then(() => {
+                if (videoMap.has(id)) {
+                    const old = videoMap.get(id);
+                    if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
+                    videoMap.delete(id);
+                    selectedCount--;
+                    updateSelectedCount();
+                    updateVideoButtons(id);
+                }
+            }).catch(console.error);
+            return;
+        }
+
+        // Сохраняем файл
+        saveVideoToDB(id, file).then(() => {
+            const url = URL.createObjectURL(file);
+            videoMap.set(id, { url, fromDB: false });
+            selectedCount++;
+            updateSelectedCount();
+            updateVideoButtons(id);
+        }).catch(console.error);
+    });
 
     // ===== МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('videoModal');
@@ -1256,6 +786,7 @@
         }
     });
 
+    // Добавляем счётчик видео в статистику
     const statsBar = document.querySelector('.stats-bar');
     const videoStat = document.createElement('div');
     videoStat.className = 'stats-item';
@@ -1266,7 +797,7 @@
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('Service Worker зарегистрирован с областью:', registration.scope);
+                console.log('Service Worker зарегистрирован');
             }).catch(function(err) {
                 console.log('Ошибка регистрации Service Worker:', err);
             });
@@ -1286,25 +817,15 @@
             const id = input.id;
             const url = await getVideoFromDB(id);
             if (url) {
-                videoMap.set(id, { url, file: null, fromDB: true });
+                videoMap.set(id, { url, fromDB: true });
                 selectedCount++;
-                // Сохраняем ссылку в data-атрибут для плеера (не нужно)
-                // Обновляем кнопки
-                updateVideoButtons(id);
-                // Показываем кнопку "Смотреть", если нет ссылки
-                const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
-                if (playBtn && !getLink(id)) {
-                    playBtn.style.display = 'inline-flex';
-                    playBtn.dataset.type = 'file';
-                    playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
-                }
-                const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
-                if (pickBtn) pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
             }
+            // Обновляем кнопки для каждого (даже если нет файла)
+            updateVideoButtons(id);
         }
         updateSelectedCount();
 
-        // Синхронизация прогресса и истории
+        // Синхронизация прогресса
         let needsSync = false;
         for (let i = 0; i < totalItems; i++) {
             if (progress[i]) {
@@ -1320,6 +841,7 @@
         }
 
         updateAll();
+        // Убираем текстовый лейбл "нажмите на номер" если нужно
     }
 
     init().catch(console.error);
