@@ -167,7 +167,7 @@
         }
         .timer-display {
             font-family: 'Courier New', monospace;
-            font-size: 3.2rem;
+            font-size: 4.5rem; /* минимум 1.5 см (~4.5rem) */
             font-weight: 700;
             color: #ffffff;
             letter-spacing: 4px;
@@ -177,6 +177,7 @@
             padding: 4px 16px;
             border-radius: 12px;
             flex: 0 1 auto;
+            line-height: 1.2;
         }
         .timer-controls {
             display: flex;
@@ -186,23 +187,24 @@
             flex: 1 1 auto;
             justify-content: flex-end;
         }
+        /* Большие кнопки */
         .timer-btn {
             background: #2d3f4f;
             border: none;
             color: #ffffff;
-            padding: 8px 24px;
-            border-radius: 30px;
-            font-size: 16px;
+            padding: 12px 32px;
+            border-radius: 40px;
+            font-size: 20px;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.15s;
             touch-action: manipulation;
             font-family: inherit;
-            min-height: 48px;
+            min-height: 60px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 100px;
+            min-width: 140px;
         }
         .timer-btn:hover { background: #3d5a73; }
         .timer-btn:active { transform: scale(0.96); }
@@ -222,11 +224,11 @@
             border-radius: 30px;
         }
         .timer-set-group input {
-            width: 40px;
+            width: 44px;
             background: transparent;
             border: none;
             color: #ffffff;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             text-align: center;
             padding: 2px 0;
@@ -239,7 +241,7 @@
             background: transparent;
             border: none;
             color: #cccccc;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             cursor: pointer;
             padding: 0 4px;
@@ -248,7 +250,7 @@
         .timer-set-group .set-btn:hover { color: #ffffff; }
         .timer-set-label {
             color: #aaaaaa;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .timer-sound-group {
@@ -260,25 +262,25 @@
             background: #2d3f4f;
             border: none;
             color: #ffffff;
-            font-size: 13px;
-            padding: 4px 12px;
+            font-size: 14px;
+            padding: 4px 14px;
             border-radius: 20px;
             outline: none;
             font-family: inherit;
             cursor: pointer;
-            height: 36px;
+            height: 40px;
         }
         .timer-sound-group select option { background: #1a2632; }
         .custom-sound-btn {
             background: #2d3f4f;
             border: none;
             color: #ffffff;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             font-family: inherit;
-            height: 36px;
+            height: 40px;
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -286,7 +288,7 @@
         .custom-sound-btn:hover { background: #3d5a73; }
         .custom-sound-label {
             color: #aaa;
-            font-size: 12px;
+            font-size: 13px;
             max-width: 100px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -409,7 +411,7 @@
             transition: all 0.15s;
             flex-shrink: 0;
             touch-action: manipulation;
-            pointer-events: auto; /* чтобы не перехватывался клик строкой */
+            pointer-events: auto;
         }
         .edit-name-btn:hover { background: #c0392b; border-color: #c0392b; color: #ffffff; }
         .edit-name-btn:active { transform: scale(0.9); }
@@ -474,12 +476,14 @@
             .header-logo { text-align: center; }
             .header-logo .ronin, .header-logo .family { font-size: 24px; }
             .timer-wrapper { flex-direction: column; align-items: stretch; padding: 12px; }
-            .timer-display { font-size: 2.8rem; min-width: auto; }
-            .timer-controls { justify-content: center; }
-            .timer-btn { font-size: 14px; padding: 6px 16px; min-height: 40px; min-width: 80px; }
-            .timer-set-group input { width: 34px; font-size: 16px; }
-            .timer-sound-group select { font-size: 12px; padding: 2px 10px; height: 32px; }
-            .custom-sound-btn { height: 32px; font-size: 12px; }
+            .timer-display { font-size: 3.6rem; min-width: auto; }
+            .timer-controls { justify-content: center; flex-direction: column; align-items: stretch; }
+            .timer-btn { font-size: 18px; padding: 10px 20px; min-height: 54px; min-width: auto; width: 100%; }
+            .timer-set-group { justify-content: center; flex-wrap: wrap; }
+            .timer-set-group input { width: 38px; font-size: 18px; }
+            .timer-sound-group { justify-content: center; flex-wrap: wrap; }
+            .timer-sound-group select { font-size: 13px; height: 36px; }
+            .custom-sound-btn { height: 36px; font-size: 13px; }
             .stats-bar { gap: 12px; padding: 8px 0 12px; }
             .stats-item { font-size: 12px; }
             .stats-item .num { font-size: 13px; }
@@ -496,9 +500,9 @@
         }
         @media (max-width: 400px) {
             .header-logo .ronin, .header-logo .family { font-size: 20px; }
-            .timer-display { font-size: 2.2rem; }
-            .timer-btn { font-size: 12px; padding: 4px 12px; min-height: 34px; min-width: 60px; }
-            .timer-set-group input { width: 28px; font-size: 14px; }
+            .timer-display { font-size: 2.8rem; }
+            .timer-btn { font-size: 16px; padding: 8px 16px; min-height: 48px; }
+            .timer-set-group input { width: 30px; font-size: 16px; }
             .edit-name-btn { width: 28px; height: 28px; font-size: 14px; }
             ul li { padding-left: 34px; }
             ul li::before { width: 24px; height: 24px; font-size: 10px; line-height: 24px; }
@@ -549,7 +553,7 @@
         </div>
     </div>
 
-    <!-- ===== ТАЙМЕР (отдельный блок под шапкой) ===== -->
+    <!-- ===== ТАЙМЕР ===== -->
     <div class="timer-wrapper">
         <div class="timer-display" id="timerDisplay">05:00</div>
         <div class="timer-controls">
@@ -577,7 +581,7 @@
                 <span class="custom-sound-label" id="customSoundLabel">нет</span>
                 <input type="file" accept="audio/*" id="customSoundInput" class="file-input-hidden">
             </div>
-            <!-- Кнопки управления -->
+            <!-- Кнопки управления (большие) -->
             <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
             <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
         </div>
@@ -617,7 +621,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '1.4';
+    const APP_VERSION = '1.5';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -645,11 +649,37 @@
         const customSoundBtn = document.getElementById('customSoundBtn');
         const customSoundLabel = document.getElementById('customSoundLabel');
 
+        // ===== КЛЮЧИ ДЛЯ LOCALSTORAGE =====
+        const SOUND_KEY = 'ronin_timer_sound';
+        const CUSTOM_SOUND_NAME_KEY = 'ronin_custom_sound_name';
+
         let totalSeconds = 300;
         let remaining = totalSeconds;
         let timerId = null;
         let isRunning = false;
         let customSoundURL = null;
+
+        // Загрузка сохранённого звука
+        function loadSoundSettings() {
+            const savedSound = localStorage.getItem(SOUND_KEY);
+            if (savedSound) {
+                soundSelect.value = savedSound;
+            } else {
+                soundSelect.value = 'beep';
+            }
+            const savedCustomName = localStorage.getItem(CUSTOM_SOUND_NAME_KEY);
+            if (savedCustomName) {
+                customSoundLabel.textContent = savedCustomName;
+            } else {
+                customSoundLabel.textContent = 'нет';
+            }
+        }
+
+        // Сохранение выбранного звука
+        function saveSoundSettings() {
+            localStorage.setItem(SOUND_KEY, soundSelect.value);
+            // Имя файла сохраняется при загрузке
+        }
 
         function formatTime(sec) {
             const m = Math.floor(sec / 60);
@@ -783,6 +813,7 @@
             if (!isRunning) resetTimer();
         });
 
+        // Загрузка собственного звука
         customSoundBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             customSoundInput.click();
@@ -796,12 +827,40 @@
                 }
                 customSoundURL = URL.createObjectURL(file);
                 customSoundLabel.textContent = file.name;
+                // Сохраняем имя файла в localStorage
+                localStorage.setItem(CUSTOM_SOUND_NAME_KEY, file.name);
                 soundSelect.value = 'custom';
+                saveSoundSettings();
             } else {
                 customSoundLabel.textContent = 'нет';
+                localStorage.removeItem(CUSTOM_SOUND_NAME_KEY);
             }
             this.value = '';
         });
+
+        // Сохранение выбора звука при изменении
+        soundSelect.addEventListener('change', function() {
+            saveSoundSettings();
+            // Если выбрали custom, но файла нет – предлагаем загрузить
+            if (this.value === 'custom' && !customSoundURL) {
+                if (confirm('Свой звук не загружен. Загрузить сейчас?')) {
+                    customSoundBtn.click();
+                } else {
+                    // Если пользователь отменил, переключаем на beep
+                    soundSelect.value = 'beep';
+                    saveSoundSettings();
+                }
+            }
+        });
+
+        // Инициализация звука
+        loadSoundSettings();
+        // Если сохранён custom, но нет URL, пробуем найти загруженный файл? Невозможно.
+        // Проверяем, если сохранён custom, но URL нет, переключаем на beep
+        if (soundSelect.value === 'custom' && !customSoundURL) {
+            soundSelect.value = 'beep';
+            saveSoundSettings();
+        }
 
         resetTimer();
     })();
@@ -877,7 +936,7 @@
         updateAll();
     }
 
-    // ===== ГЕНЕРАЦИЯ СПИСКА (с кнопками под названием) =====
+    // ===== ГЕНЕРАЦИЯ СПИСКА =====
     function renderTechList() {
         const app = document.getElementById('app');
         let html = '';
@@ -919,7 +978,7 @@
         updateAll();
     }
 
-    // ===== РЕДАКТИРОВАНИЕ (события через делегирование) =====
+    // ===== РЕДАКТИРОВАНИЕ =====
     document.addEventListener('click', function(e) {
         const editBtn = e.target.closest('.edit-name-btn');
         if (editBtn) {
@@ -1163,10 +1222,8 @@
             return;
         }
 
-        // Клик по строке техники (переключение статуса)
         const li = e.target.closest('.tech-item');
         if (li) {
-            // Игнорируем клик по кнопке редактирования или инпуту
             if (e.target.closest('.edit-name-btn') || e.target.closest('.tech-name-input')) return;
             const idx = parseInt(li.dataset.idx, 10);
             if (!isNaN(idx)) {
@@ -1175,7 +1232,6 @@
         }
     });
 
-    // Обработчики для кнопок "Очистить" и "Сбросить прогресс"
     document.getElementById('clearHistoryBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         clearHistory();
