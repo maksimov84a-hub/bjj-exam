@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) ===== */
+        /* ===== СТИЛИ (БЕЗ ИЗМЕНЕНИЙ, такие же как в предыдущей версии) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -191,10 +191,7 @@
 </head>
 <body>
 <div class="container">
-    <!-- СЧЁТЧИК ВЕРСИЙ (фиксированное значение из кода) -->
     <div class="version-badge" id="versionBadge"></div>
-
-    <!-- ШАПКА -->
     <div class="header">
         <div class="header-logo">
             <span class="ronin">RONIN</span>
@@ -210,7 +207,6 @@
         </div>
     </div>
 
-    <!-- СТАТИСТИКА -->
     <div class="stats-bar">
         <div class="stats-item">
             <span class="num" id="totalCount">50</span> техник всего
@@ -223,10 +219,8 @@
         </div>
     </div>
 
-    <!-- КОНТЕЙНЕР ДЛЯ РАЗДЕЛОВ -->
     <div id="app"></div>
 
-    <!-- ИСТОРИЯ -->
     <div class="history-section" id="historySection">
         <div class="history-title">
             📋 История изученных техник
@@ -242,7 +236,6 @@
     </div>
 </div>
 
-<!-- МОДАЛЬНОЕ ОКНО -->
 <div class="modal-overlay" id="videoModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -262,124 +255,51 @@
 </div>
 
 <script>
-    // ===== ФИКСИРОВАННАЯ ВЕРСИЯ ПРИЛОЖЕНИЯ =====
-    // ПРИ КАЖДОМ ОБНОВЛЕНИИ ФАЙЛА МЕНЯЙТЕ ЭТО ЗНАЧЕНИЕ (например, "0.2", "0.3" и т.д.)
-    const APP_VERSION = '0.2';
-
-    // Отображаем версию в левом верхнем углу
+    // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
+    const APP_VERSION = '0.3'; // меняйте при каждом обновлении
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
-    // ===== Service Worker: обновляем кэш при смене версии =====
+    // ===== SERVICE WORKER =====
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js')
-                .then(function(registration) {
-                    console.log('Service Worker зарегистрирован. Версия:', APP_VERSION);
-                    // Если есть обновление, принудительно обновляем
-                    if (registration.waiting) {
-                        // Если есть ожидающий worker, сообщаем пользователю
-                        console.log('Есть обновление Service Worker');
-                    }
+                .then(reg => {
+                    console.log('SW зарегистрирован');
+                    // Принудительно проверяем обновления
+                    reg.update();
                 })
-                .catch(function(err) {
-                    console.log('Ошибка регистрации Service Worker:', err);
-                });
-
-            // Автоматическое обновление при появлении новой версии
-            navigator.serviceWorker.ready.then(function(registration) {
-                registration.update();
-            });
+                .catch(err => console.log('SW ошибка:', err));
         });
     }
 
-    // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
+    // ===== ДАННЫЕ ПРОГРАММЫ =====
     const data = {
         "Стоя": {
-            "Броски": [
-                "Задняя подножка",
-                "Подхват под одну ногу",
-                "Подсад",
-                "Флай армбар"
-            ],
-            "Гард пул": [
-                "Dela Riva — уход под ноги — бросок с захватом рукава — сайд",
-                "Затягивание в закрытый гард"
-            ]
+            "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
+            "Гард пул": ["Dela Riva — уход под ноги — бросок с захватом рукава — сайд","Затягивание в закрытый гард"]
         },
         "Уходы из плохих позиций": {
-            "Маунт": ["Мост", "Креветка"],
-            "Сайд контроль": [
-                "Мост — креветка — кимура",
-                "Выход к голове на брабо чоук"
-            ],
-            "Колено на животе": [
-                "Мост — креветка — забираем спину",
-                "Выход с подъемом упираясь рукой в живот и контролем пятки — болевой на колено"
-            ],
-            "Бэк маунт": [
-                "Уход в сторону свободной руки",
-                "Уход в обратную сторону"
-            ],
+            "Маунт": ["Мост","Креветка"],
+            "Сайд контроль": ["Мост — креветка — кимура","Выход к голове на брабо чоук"],
+            "Колено на животе": ["Мост — креветка — забираем спину","Выход с подъемом упираясь рукой в живот и контролем пятки — болевой на колено"],
+            "Бэк маунт": ["Уход в сторону свободной руки","Уход в обратную сторону"],
             "Кесо гатами": ["Уход мостом — сайд"],
             "Север-юг": ["Уход обратной креветкой — рамка"]
         },
         "Проходы гарда": {
-            "Закрытый гард": [
-                "Проход с раскрытием гарда с помощью локтей и спины",
-                "Проход со вставанием на одну ногу",
-                "Проход с захватом двух ног"
-            ],
-            "Открытый гард": [
-                "Нислайд",
-                "Ториандер",
-                "Накат",
-                "Лэг драг"
-            ]
+            "Закрытый гард": ["Проход с раскрытием гарда с помощью локтей и спины","Проход со вставанием на одну ногу","Проход с захватом двух ног"],
+            "Открытый гард": ["Нислайд","Ториандер","Накат","Лэг драг"]
         },
         "Свипы": {
-            "Закрытый гард": [
-                "Кимура свип — кимура",
-                "Ножницы — кросс чоук",
-                "Арм свип — ущемление",
-                "Флауэрс свип — амбар"
-            ],
-            "Открытый гард": [
-                "Трипод свип",
-                "Сингл икс свип",
-                "Даларива свип",
-                "Батерфляй свип — изеикиль",
-                "Выход на ашигарами — ахилл",
-                "Кимура из хаф гарда"
-            ]
+            "Закрытый гард": ["Кимура свип — кимура","Ножницы — кросс чоук","Арм свип — ущемление","Флауэрс свип — амбар"],
+            "Открытый гард": ["Трипод свип","Сингл икс свип","Даларива свип","Батерфляй свип — изеикиль","Выход на ашигарами — ахилл","Кимура из хаф гарда"]
         },
         "Атаки": {
-            "Из закрытого гарда": [
-                "Кимура",
-                "Армбар",
-                "Гильотина",
-                "Кросс чоук"
-            ],
-            "Из топ позиций (сайд, маунт, бэк маунт)": [
-                "Хлеборезка из сайд контроля",
-                "Американа из сайд контроля",
-                "Кросс чоук из фулл маунт",
-                "Армбар из фулл маунта с переходом на S маунт",
-                "Удушающий одной рукой из бэк маунт",
-                "Треугольник из бэк маунт"
-            ],
-            "Болевые на ноги": [
-                "Проход открытого гарда с выходом на 4/11 — вся связка",
-                "Трайпод свип с выходом на Ахилл",
-                "Кувырок из стойки на колено и выход на болевой (колено)"
-            ],
-            "Черепаха с верху": [
-                "Раскрытие черепахи Кашивазаки — колено на живот — бейсбол чоук",
-                "Геликоптер"
-            ],
-            "Черепаха с низу": [
-                "Выход в закрытый гард — Кимура",
-                "Бросок с захватом руки — сайд — американa"
-            ]
+            "Из закрытого гарда": ["Кимура","Армбар","Гильотина","Кросс чоук"],
+            "Из топ позиций (сайд, маунт, бэк маунт)": ["Хлеборезка из сайд контроля","Американа из сайд контроля","Кросс чоук из фулл маунт","Армбар из фулл маунта с переходом на S маунт","Удушающий одной рукой из бэк маунт","Треугольник из бэк маунт"],
+            "Болевые на ноги": ["Проход открытого гарда с выходом на 4/11 — вся связка","Трайпод свип с выходом на Ахилл","Кувырок из стойки на колено и выход на болевой (колено)"],
+            "Черепаха с верху": ["Раскрытие черепахи Кашивазаки — колено на живот — бейсбол чоук","Геликоптер"],
+            "Черепаха с низу": ["Выход в закрытый гард — Кимура","Бросок с захватом руки — сайд — американa"]
         }
     };
 
@@ -396,8 +316,7 @@
     let sectionIndex = 0;
     for (const [sectionTitle, subs] of Object.entries(data)) {
         sectionIndex++;
-        html += `<div class="section">`;
-        html += `<div class="section-title"><span class="section-num">${sectionIndex}</span> ${sectionTitle}</div>`;
+        html += `<div class="section"><div class="section-title"><span class="section-num">${sectionIndex}</span> ${sectionTitle}</div>`;
         for (const [subTitle, items] of Object.entries(subs)) {
             html += `<div class="subsection"><div class="subsection-title">${subTitle}</div><ul>`;
             for (const techName of items) {
@@ -448,13 +367,9 @@
         const saved = localStorage.getItem(LINKS_KEY);
         if (saved) {
             try { videoLinks = JSON.parse(saved); } catch (e) { videoLinks = {}; }
-        } else {
-            videoLinks = {};
-        }
+        } else { videoLinks = {}; }
     }
-    function saveLinks() {
-        localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks));
-    }
+    function saveLinks() { localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks)); }
     function setLink(id, url) {
         if (url && url.trim() !== '') {
             videoLinks[id] = url.trim();
@@ -464,9 +379,7 @@
         saveLinks();
         updateVideoButtons(id);
     }
-    function getLink(id) {
-        return videoLinks[id] || null;
-    }
+    function getLink(id) { return videoLinks[id] || null; }
 
     // ===== ПРОГРЕСС И ИСТОРИЯ =====
     function loadProgress() {
@@ -480,9 +393,7 @@
             } catch (e) {}
         }
     }
-    function saveProgress() {
-        localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
-    }
+    function saveProgress() { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }
     function loadHistory() {
         const saved = localStorage.getItem(HISTORY_KEY);
         if (saved) {
@@ -501,9 +412,7 @@
             } catch (e) {}
         }
     }
-    function saveHistory() {
-        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-    }
+    function saveHistory() { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
 
     function updateAll() {
         const done = progress.filter(v => v).length;
@@ -513,16 +422,12 @@
 
         document.querySelectorAll('.tech-item').forEach(li => {
             const idx = parseInt(li.dataset.idx, 10);
-            if (progress[idx]) {
-                li.classList.add('done');
-            } else {
-                li.classList.remove('done');
-            }
+            if (progress[idx]) li.classList.add('done');
+            else li.classList.remove('done');
         });
 
         renderHistory();
-
-        // Обновить кнопки для всех техник
+        // Обновляем все кнопки видео
         document.querySelectorAll('.file-input-hidden').forEach(input => {
             updateVideoButtons(input.id);
         });
@@ -533,11 +438,9 @@
         const techName = techNames[idx];
         const newStatus = !progress[idx];
         progress[idx] = newStatus;
-
         if (newStatus) {
             history.push({ tech: techName, date: Date.now(), index: idx });
         }
-
         saveProgress();
         saveHistory();
         updateAll();
@@ -555,9 +458,7 @@
             const key = dateObj.getFullYear() + '-' +
                        String(dateObj.getMonth() + 1).padStart(2, '0') + '-' +
                        String(dateObj.getDate()).padStart(2, '0');
-            if (!groups.has(key)) {
-                groups.set(key, []);
-            }
+            if (!groups.has(key)) groups.set(key, []);
             groups.get(key).push(entry);
         }
         const sortedDates = Array.from(groups.keys()).sort((a, b) => b.localeCompare(a));
@@ -601,7 +502,7 @@
         updateAll();
     }
 
-    // ===== РАБОТА С INDEXEDDB (для файлов) =====
+    // ===== РАБОТА С INDEXEDDB (ДЛЯ ВИДЕОФАЙЛОВ) =====
     const DB_NAME = 'RoninVideoDB';
     const STORE_NAME = 'videos';
     let db = null;
@@ -674,8 +575,8 @@
         });
     }
 
-    // ===== ВИДЕО =====
-    const videoMap = new Map();
+    // ===== ВИДЕО (глобальное состояние) =====
+    const videoMap = new Map(); // id -> { url, fromDB }
     let selectedCount = 0;
 
     function updateSelectedCount() {
@@ -692,6 +593,7 @@
         const link = getLink(id);
         const hasFile = videoMap.has(id);
 
+        // Кнопка "Ссылка" всегда видна
         linkBtn.style.display = 'inline-flex';
 
         if (link) {
@@ -715,7 +617,7 @@
         }
     }
 
-    // ===== ОБРАБОТЧИКИ =====
+    // ===== ОБРАБОТЧИКИ СОБЫТИЙ (делегирование) =====
     document.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-video');
         if (!target) return;
@@ -759,13 +661,16 @@
         }
     });
 
-    document.addEventListener('change', function(e) {
+    // Обработка выбора файла
+    document.addEventListener('change', async function(e) {
         const input = e.target.closest('.file-input-hidden');
         if (!input) return;
         const id = input.id;
         const file = input.files[0];
         if (!file) {
-            deleteVideoFromDB(id).then(() => {
+            // Удаляем файл
+            try {
+                await deleteVideoFromDB(id);
                 if (videoMap.has(id)) {
                     const old = videoMap.get(id);
                     if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
@@ -774,17 +679,30 @@
                     updateSelectedCount();
                     updateVideoButtons(id);
                 }
-            }).catch(console.error);
+            } catch (err) {
+                console.error('Ошибка удаления файла:', err);
+            }
             return;
         }
 
-        saveVideoToDB(id, file).then(() => {
+        try {
+            // Сохраняем файл
+            await saveVideoToDB(id, file);
             const url = URL.createObjectURL(file);
+            // Если уже был файл, удаляем старый URL
+            if (videoMap.has(id)) {
+                const old = videoMap.get(id);
+                if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
+            } else {
+                selectedCount++;
+            }
             videoMap.set(id, { url, fromDB: false });
-            selectedCount++;
             updateSelectedCount();
             updateVideoButtons(id);
-        }).catch(console.error);
+        } catch (err) {
+            console.error('Ошибка сохранения файла:', err);
+            alert('Не удалось сохранить видео. Попробуйте ещё раз.');
+        }
     });
 
     // ===== МОДАЛЬНОЕ ОКНО =====
@@ -825,6 +743,7 @@
         }
     });
 
+    // Добавляем счётчик видео в статистику
     const statsBar = document.querySelector('.stats-bar');
     const videoStat = document.createElement('div');
     videoStat.className = 'stats-item';
@@ -839,6 +758,7 @@
             loadHistory();
             loadLinks();
 
+            // Восстанавливаем файлы из IndexedDB
             const inputs = document.querySelectorAll('.file-input-hidden');
             for (const input of inputs) {
                 const id = input.id;
@@ -847,10 +767,12 @@
                     videoMap.set(id, { url, fromDB: true });
                     selectedCount++;
                 }
+                // Обновляем кнопки
                 updateVideoButtons(id);
             }
             updateSelectedCount();
 
+            // Синхронизация прогресса
             let needsSync = false;
             for (let i = 0; i < totalItems; i++) {
                 if (progress[i]) {
@@ -868,6 +790,7 @@
             updateAll();
         } catch (err) {
             console.error('Ошибка инициализации:', err);
+            alert('При загрузке приложения произошла ошибка. Попробуйте перезапустить.');
         }
     }
 
