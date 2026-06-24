@@ -32,6 +32,21 @@
             padding: 20px 20px 16px;
             position: relative;
         }
+        /* ===== СЧЁТЧИК ВЕРСИЙ (левый верхний угол) ===== */
+        .version-badge {
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            background: rgba(0,0,0,0.05);
+            color: #6f7987;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            z-index: 10;
+        }
         .header {
             display: flex;
             flex-direction: column;
@@ -177,6 +192,9 @@
 </head>
 <body>
 <div class="container">
+    <!-- СЧЁТЧИК ВЕРСИЙ (левый верхний угол) -->
+    <div class="version-badge" id="versionBadge">v0.1</div>
+
     <!-- ШАПКА -->
     <div class="header">
         <div class="header-logo">
@@ -245,6 +263,15 @@
 </div>
 
 <script>
+    // ===== СЧЁТЧИК ВЕРСИЙ (увеличиваем при каждом запуске) =====
+    (function updateVersion() {
+        const key = 'ronin_app_version';
+        let version = parseFloat(localStorage.getItem(key)) || 0.09; // начинаем с 0.09, чтобы после +0.01 стало 0.1
+        version = Math.round((version + 0.01) * 100) / 100;
+        localStorage.setItem(key, version);
+        document.getElementById('versionBadge').textContent = 'v' + version.toFixed(2);
+    })();
+
     // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
     const data = {
         "Стоя": {
