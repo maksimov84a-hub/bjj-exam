@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (без изменений) ===== */
+        /* ===== ВСЕ СТИЛИ (добавлены стили для таймера) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -71,6 +71,63 @@
         .btn-reset { background: transparent; border: 1px solid #555; color: #cccccc; padding: 2px 12px; border-radius: 12px; font-size: 12px; font-weight: 400; cursor: pointer; font-family: inherit; transition: all 0.15s; touch-action: manipulation; line-height: 20px; display: inline-flex; align-items: center; gap: 4px; }
         .btn-reset:hover { background: #333; border-color: #888; }
         .btn-reset:active { transform: scale(0.97); }
+
+        /* ===== ТАЙМЕР ===== */
+        .timer-container {
+            background: #1a2632;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border: 1px solid #3a4a5e;
+        }
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            min-width: 120px;
+            text-align: center;
+            flex: 0 1 auto;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .timer-btn {
+            background: #2d3f4f;
+            border: none;
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            touch-action: manipulation;
+            font-family: inherit;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .timer-btn:hover { background: #3d5a73; }
+        .timer-btn:active { transform: scale(0.96); }
+        .timer-btn.start { background: #27ae60; }
+        .timer-btn.start:hover { background: #2ecc71; }
+        .timer-btn.stop { background: #c0392b; }
+        .timer-btn.stop:hover { background: #e74c3c; }
+        .timer-btn.reset { background: #6f7f8f; }
+        .timer-btn.reset:hover { background: #8a9aaa; }
+
+        /* ===== СТАТИСТИКА, СПИСОК, ИСТОРИЯ (без изменений) ===== */
         .stats-bar {
             display: flex;
             gap: 20px;
@@ -243,6 +300,8 @@
             .modal-title { font-size: 15px; }
             .modal-close { width: 32px; height: 32px; font-size: 18px; }
             .modal-footer .btn-primary { padding: 6px 16px; font-size: 13px; }
+            .timer-display { font-size: 1.8rem; min-width: 90px; }
+            .timer-btn { font-size: 12px; padding: 4px 12px; min-height: 32px; }
         }
         @media (max-width: 400px) {
             .header-logo .ronin, .header-logo .family { font-size: 22px; }
@@ -253,6 +312,7 @@
             .btn-video { font-size: 11px; padding: 2px 8px; min-height: 24px; }
             .section-title { font-size: 14px; }
             .subsection-title { font-size: 12px; padding: 3px 0 3px 8px; }
+            .timer-display { font-size: 1.5rem; min-width: 70px; }
         }
         @media print {
             body { background: #fff; padding: 0.3in; }
@@ -264,7 +324,7 @@
             .header-sub span { background: #fff; }
             .header-meta { color: #333; }
             .header-meta .badge-blue { background: #1a4a6e; color: #fff; }
-            .btn-video, .modal-overlay, .btn-reset, .btn-clear-history { display: none !important; }
+            .btn-video, .modal-overlay, .btn-reset, .btn-clear-history, .timer-container { display: none !important; }
             ul li { border-bottom-color: #ccc; cursor: default; }
             ul li::before { background: #eee; color: #000; }
             ul li.done::before { background: #27ae60; color: #fff; content: "✓"; }
@@ -292,6 +352,15 @@
             <span>Экзамен <span class="badge-blue">синий пояс</span></span>
             <span class="progress-text">Сдано: <span id="doneCount">0</span> / <span id="totalCountDisplay">50</span></span>
             <button class="btn-reset" id="resetProgressBtn">⏱ Сбросить прогресс</button>
+        </div>
+    </div>
+
+    <!-- ===== ТАЙМЕР ===== -->
+    <div class="timer-container">
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        <div class="timer-controls">
+            <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
+            <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
         </div>
     </div>
 
@@ -335,12 +404,10 @@
             <button class="modal-close" id="modalClose">✕</button>
         </div>
         <div class="modal-body">
-            <!-- Видео для прямых ссылок -->
             <video id="modalVideo" controls playsinline preload="metadata" style="display:none;">
                 <source id="modalSource" src="" type="video/mp4">
                 Ваш браузер не поддерживает видео.
             </video>
-            <!-- Iframe для YouTube/Vimeo -->
             <iframe id="modalIframe" src="" style="display:none; width:100%; aspect-ratio:16/9; border:none; border-radius:8px; background:#000;" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="modal-footer">
@@ -351,7 +418,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '0.8';
+    const APP_VERSION = '0.9';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -362,6 +429,122 @@
                 .catch(err => console.log('SW ошибка:', err));
         });
     }
+
+    // ===== ТАЙМЕР =====
+    (function() {
+        const display = document.getElementById('timerDisplay');
+        const startBtn = document.getElementById('timerStartBtn');
+        const resetBtn = document.getElementById('timerResetBtn');
+
+        const TOTAL_SECONDS = 300; // 5 минут
+        let remaining = TOTAL_SECONDS;
+        let timerId = null;
+        let isRunning = false;
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function updateDisplay() {
+            display.textContent = formatTime(remaining);
+        }
+
+        function playBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Два коротких гудка
+                for (let i = 0; i < 2; i++) {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.value = 800;
+                    osc.type = 'square';
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.5);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.5 + 0.4);
+                    osc.start(audioCtx.currentTime + i * 0.5);
+                    osc.stop(audioCtx.currentTime + i * 0.5 + 0.4);
+                }
+            } catch (e) {
+                console.warn('Звук не поддерживается:', e);
+            }
+        }
+
+        function stopTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }
+            isRunning = false;
+            startBtn.textContent = '▶ Старт';
+            startBtn.classList.remove('stop');
+            startBtn.classList.add('start');
+        }
+
+        function resetTimer() {
+            stopTimer();
+            remaining = TOTAL_SECONDS;
+            updateDisplay();
+            startBtn.textContent = '▶ Старт';
+            startBtn.classList.remove('stop');
+            startBtn.classList.add('start');
+        }
+
+        function startTimer() {
+            if (isRunning) {
+                // Пауза
+                stopTimer();
+                startBtn.textContent = '▶ Продолжить';
+                startBtn.classList.remove('stop');
+                startBtn.classList.add('start');
+                return;
+            }
+
+            // Если время истекло, сбрасываем
+            if (remaining <= 0) {
+                resetTimer();
+                return;
+            }
+
+            isRunning = true;
+            startBtn.textContent = '⏸ Пауза';
+            startBtn.classList.remove('start');
+            startBtn.classList.add('stop');
+
+            timerId = setInterval(function() {
+                remaining--;
+                updateDisplay();
+
+                if (remaining <= 0) {
+                    stopTimer();
+                    playBeep();
+                    // Сброс кнопки
+                    startBtn.textContent = '▶ Старт';
+                    startBtn.classList.remove('stop');
+                    startBtn.classList.add('start');
+                    // Можно также показать уведомление
+                    // alert('Время вышло!');
+                    // Звук уже сыграл
+                }
+            }, 1000);
+        }
+
+        // Обработчики
+        startBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            startTimer();
+        });
+
+        resetBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            resetTimer();
+        });
+
+        // Инициализация
+        resetTimer();
+    })();
 
     // ===== ДАННЫЕ ПРОГРАММЫ =====
     const data = {
@@ -522,7 +705,6 @@
         });
 
         renderHistory();
-        // Обновляем кнопки
         document.querySelectorAll('[data-target^="video-"]').forEach(el => {
             const id = el.dataset.target;
             if (id) updateVideoButtons(id);
@@ -613,7 +795,6 @@
     }
 
     // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
-    // Обработчик для кнопок
     document.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-video');
         if (target) {
@@ -645,7 +826,6 @@
             return;
         }
 
-        // Если не кнопка – клик по строке техники
         const li = e.target.closest('.tech-item');
         if (li) {
             const idx = parseInt(li.dataset.idx, 10);
@@ -655,19 +835,17 @@
         }
     });
 
-    // Обработчик для кнопки "Очистить историю"
     document.getElementById('clearHistoryBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         clearHistory();
     });
 
-    // Обработчик для кнопки "Сбросить прогресс"
     document.getElementById('resetProgressBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         resetProgressOnly();
     });
 
-    // ===== МОДАЛЬНОЕ ОКНО (с поддержкой video и iframe) =====
+    // ===== МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('videoModal');
     const videoEl = document.getElementById('modalVideo');
     const sourceEl = document.getElementById('modalSource');
@@ -677,17 +855,14 @@
     const closeBtn2 = document.getElementById('modalCloseBtn');
 
     function openModal(url, title) {
-        // Определяем тип ссылки
         const isYouTube = url.match(/(youtube\.com|youtu\.be)/);
         const isVimeo = url.match(/vimeo\.com/);
         const isDirectVideo = /\.(mp4|webm|ogg|mov|avi)(\?.*)?$/i.test(url);
 
-        // Скрываем всё
         videoEl.style.display = 'none';
         iframeEl.style.display = 'none';
 
         if (isYouTube || isVimeo) {
-            // Для YouTube/Vimeo – iframe
             let embedUrl = url;
             if (isYouTube) {
                 const videoId = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
@@ -702,7 +877,6 @@
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         } else if (isDirectVideo) {
-            // Для прямых ссылок на видео – video тег
             sourceEl.src = url;
             videoEl.load();
             videoEl.style.display = 'block';
@@ -711,7 +885,6 @@
             document.body.style.overflow = 'hidden';
             videoEl.play().catch(() => {});
         } else {
-            // Остальное – открываем в новой вкладке
             window.open(url, '_blank');
         }
     }
@@ -742,13 +915,11 @@
         loadHistory();
         loadLinks();
 
-        // Обновить все кнопки
         document.querySelectorAll('[data-target^="video-"]').forEach(el => {
             const id = el.dataset.target;
             if (id) updateVideoButtons(id);
         });
 
-        // Синхронизация прогресса
         let needsSync = false;
         for (let i = 0; i < totalItems; i++) {
             if (progress[i]) {
