@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (с добавлениями для таймера и редактирования) ===== */
+        /* ===== БАЗОВЫЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -135,7 +135,7 @@
             border-radius: 20px;
         }
         .timer-set-group input {
-            width: 50px;
+            width: 40px;
             background: transparent;
             border: none;
             color: #ffffff;
@@ -164,12 +164,31 @@
             font-size: 12px;
             margin-left: 2px;
         }
+        .timer-select-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #2d3f4f;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .timer-select-group select {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 13px;
+            padding: 4px 0;
+            outline: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .timer-select-group select option { background: #1a2632; }
 
         /* ===== РЕДАКТИРОВАНИЕ НАЗВАНИЙ ===== */
         .tech-name-wrapper {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex: 1 1 auto;
             min-width: 0;
         }
@@ -184,9 +203,9 @@
         .tech-name-input {
             font-size: 15px;
             font-family: inherit;
-            border: 1px solid #c0392b;
+            border: 2px solid #c0392b;
             border-radius: 6px;
-            padding: 2px 8px;
+            padding: 4px 8px;
             width: 100%;
             min-width: 100px;
             background: #fff;
@@ -194,19 +213,29 @@
             outline: none;
         }
         .edit-name-btn {
-            background: transparent;
-            border: none;
-            color: #6f7987;
+            background: #f0f2f5;
+            border: 1px solid #b0b8c0;
+            border-radius: 50%;
+            color: #2d6a9f;
             cursor: pointer;
-            font-size: 14px;
-            padding: 0 2px;
-            transition: color 0.15s;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
             flex-shrink: 0;
+            touch-action: manipulation;
         }
-        .edit-name-btn:hover { color: #c0392b; }
+        .edit-name-btn:hover {
+            background: #c0392b;
+            border-color: #c0392b;
+            color: #ffffff;
+        }
         .edit-name-btn:active { transform: scale(0.9); }
 
-        /* ===== СТАТИСТИКА, СПИСОК, ИСТОРИЯ (без изменений) ===== */
+        /* ===== СТАТИСТИКА, СПИСОК, ИСТОРИЯ ===== */
         .stats-bar {
             display: flex;
             gap: 20px;
@@ -327,20 +356,6 @@
         .btn-clear-history { background: transparent; border: 1px solid #d0d4d8; color: #6f7987; padding: 2px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.15s; touch-action: manipulation; line-height: 24px; margin-left: auto; }
         .btn-clear-history:hover { background: #f0f2f5; border-color: #b0b8c0; }
         .btn-clear-history:active { transform: scale(0.97); }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; padding: 16px; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: #ffffff; border-radius: 16px; padding: 16px; max-width: 720px; width: 100%; max-height: 90vh; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; animation: modalFade 0.2s ease; }
-        @keyframes modalFade { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid #edeef0; flex-shrink: 0; }
-        .modal-title { font-weight: 600; font-size: 17px; color: #000000; }
-        .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #6f7987; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; touch-action: manipulation; font-family: inherit; }
-        .modal-close:hover { background: #edeef0; }
-        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .modal-body video { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; display: none; max-height: 60vh; object-fit: contain; }
-        .modal-body iframe { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: none; display: none; max-height: 60vh; }
-        .modal-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; flex-shrink: 0; }
-        .modal-footer .btn-primary { background: #2d6a9f; color: #fff; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
-        .modal-footer .btn-primary:hover { background: #1e4f7a; }
         @media (max-width: 600px) {
             body { padding: 8px 6px; }
             .container { padding: 12px; }
@@ -367,14 +382,10 @@
             .history-day { padding: 6px 0; }
             .history-date { font-size: 13px; }
             .history-item { font-size: 13px; }
-            .modal-box { padding: 12px; border-radius: 12px; }
-            .modal-title { font-size: 15px; }
-            .modal-close { width: 32px; height: 32px; font-size: 18px; }
-            .modal-footer .btn-primary { padding: 6px 16px; font-size: 13px; }
             .timer-display { font-size: 1.8rem; min-width: 90px; }
             .timer-btn { font-size: 12px; padding: 4px 10px; min-height: 32px; }
-            .timer-set-group input { width: 40px; font-size: 14px; }
-            .edit-name-btn { font-size: 12px; }
+            .timer-set-group input { width: 34px; font-size: 14px; }
+            .edit-name-btn { width: 32px; height: 32px; font-size: 16px; }
         }
         @media (max-width: 400px) {
             .header-logo .ronin, .header-logo .family { font-size: 22px; }
@@ -386,7 +397,8 @@
             .section-title { font-size: 14px; }
             .subsection-title { font-size: 12px; padding: 3px 0 3px 8px; }
             .timer-display { font-size: 1.5rem; min-width: 70px; }
-            .timer-set-group input { width: 34px; font-size: 12px; }
+            .timer-set-group input { width: 28px; font-size: 12px; }
+            .edit-name-btn { width: 28px; height: 28px; font-size: 14px; }
         }
         @media print {
             body { background: #fff; padding: 0.3in; }
@@ -398,7 +410,7 @@
             .header-sub span { background: #fff; }
             .header-meta { color: #333; }
             .header-meta .badge-blue { background: #1a4a6e; color: #fff; }
-            .btn-video, .modal-overlay, .btn-reset, .btn-clear-history, .timer-container { display: none !important; }
+            .btn-video, .btn-reset, .btn-clear-history, .timer-container { display: none !important; }
             ul li { border-bottom-color: #ccc; cursor: default; }
             ul li::before { background: #eee; color: #000; }
             ul li.done::before { background: #27ae60; color: #fff; content: "✓"; }
@@ -436,8 +448,20 @@
             <div class="timer-set-group">
                 <button class="set-btn" id="timerDecMin">−</button>
                 <input type="number" id="timerMinutesInput" value="5" min="0" max="999">
+                <span class="timer-set-label">м</span>
                 <button class="set-btn" id="timerIncMin">+</button>
-                <span class="timer-set-label">мин</span>
+                <span style="color:#888; margin:0 2px;">:</span>
+                <button class="set-btn" id="timerDecSec">−</button>
+                <input type="number" id="timerSecondsInput" value="0" min="0" max="59">
+                <span class="timer-set-label">с</span>
+                <button class="set-btn" id="timerIncSec">+</button>
+            </div>
+            <div class="timer-select-group">
+                <select id="timerSoundSelect">
+                    <option value="beep">Стандартный</option>
+                    <option value="beep2">Писк</option>
+                    <option value="silence">Тишина</option>
+                </select>
             </div>
             <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
             <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
@@ -472,33 +496,13 @@
     </div>
 
     <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #edeef0; text-align: center; color: #6f7987; font-size: 13px;">
-        Нажмите «Ссылка» для добавления URL · «Смотреть» для просмотра во встроенном плеере
-    </div>
-</div>
-
-<!-- МОДАЛЬНОЕ ОКНО -->
-<div class="modal-overlay" id="videoModal">
-    <div class="modal-box">
-        <div class="modal-header">
-            <span class="modal-title" id="modalTitle">Видео</span>
-            <button class="modal-close" id="modalClose">✕</button>
-        </div>
-        <div class="modal-body">
-            <video id="modalVideo" controls playsinline preload="metadata" style="display:none;">
-                <source id="modalSource" src="" type="video/mp4">
-                Ваш браузер не поддерживает видео.
-            </video>
-            <iframe id="modalIframe" src="" style="display:none; width:100%; aspect-ratio:16/9; border:none; border-radius:8px; background:#000;" allowfullscreen loading="lazy"></iframe>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-primary" id="modalCloseBtn">Закрыть</button>
-        </div>
+        Нажмите «Ссылка» для добавления URL · «Смотреть» – откроет в новой вкладке
     </div>
 </div>
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '1.0';
+    const APP_VERSION = '1.2';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -510,17 +514,20 @@
         });
     }
 
-    // ===== ТАЙМЕР С НАСТРОЙКОЙ =====
+    // ===== ТАЙМЕР =====
     (function() {
         const display = document.getElementById('timerDisplay');
         const startBtn = document.getElementById('timerStartBtn');
         const resetBtn = document.getElementById('timerResetBtn');
-        const minutesInput = document.getElementById('timerMinutesInput');
-        const incBtn = document.getElementById('timerIncMin');
-        const decBtn = document.getElementById('timerDecMin');
+        const minInput = document.getElementById('timerMinutesInput');
+        const secInput = document.getElementById('timerSecondsInput');
+        const incMin = document.getElementById('timerIncMin');
+        const decMin = document.getElementById('timerDecMin');
+        const incSec = document.getElementById('timerIncSec');
+        const decSec = document.getElementById('timerDecSec');
+        const soundSelect = document.getElementById('timerSoundSelect');
 
-        const DEFAULT_MINUTES = 5;
-        let totalSeconds = DEFAULT_MINUTES * 60;
+        let totalSeconds = 300; // 5 минут
         let remaining = totalSeconds;
         let timerId = null;
         let isRunning = false;
@@ -535,31 +542,29 @@
             display.textContent = formatTime(remaining);
         }
 
-        function playBeep() {
+        function playSound(type) {
+            if (type === 'silence') return;
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                for (let i = 0; i < 2; i++) {
+                const count = (type === 'beep2') ? 3 : 2;
+                const freq = (type === 'beep2') ? 600 : 800;
+                for (let i = 0; i < count; i++) {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    osc.frequency.value = 800;
+                    osc.frequency.value = freq;
                     osc.type = 'square';
                     gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.5);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.5 + 0.4);
                     osc.start(audioCtx.currentTime + i * 0.5);
                     osc.stop(audioCtx.currentTime + i * 0.5 + 0.4);
                 }
-            } catch (e) {
-                console.warn('Звук не поддерживается:', e);
-            }
+            } catch (e) { console.warn('Звук не поддерживается:', e); }
         }
 
         function stopTimer() {
-            if (timerId) {
-                clearInterval(timerId);
-                timerId = null;
-            }
+            if (timerId) { clearInterval(timerId); timerId = null; }
             isRunning = false;
             startBtn.textContent = '▶ Старт';
             startBtn.classList.remove('stop');
@@ -568,8 +573,9 @@
 
         function resetTimer() {
             stopTimer();
-            const mins = parseInt(minutesInput.value) || DEFAULT_MINUTES;
-            totalSeconds = mins * 60;
+            const mins = parseInt(minInput.value) || 0;
+            const secs = parseInt(secInput.value) || 0;
+            totalSeconds = mins * 60 + secs;
             if (totalSeconds < 0) totalSeconds = 0;
             remaining = totalSeconds;
             updateDisplay();
@@ -580,18 +586,13 @@
 
         function startTimer() {
             if (isRunning) {
-                // Пауза
                 stopTimer();
                 startBtn.textContent = '▶ Продолжить';
                 startBtn.classList.remove('stop');
                 startBtn.classList.add('start');
                 return;
             }
-
-            if (remaining <= 0) {
-                resetTimer();
-                return;
-            }
+            if (remaining <= 0) { resetTimer(); return; }
 
             isRunning = true;
             startBtn.textContent = '⏸ Пауза';
@@ -601,10 +602,10 @@
             timerId = setInterval(function() {
                 remaining--;
                 updateDisplay();
-
                 if (remaining <= 0) {
                     stopTimer();
-                    playBeep();
+                    const sound = soundSelect.value;
+                    playSound(sound);
                     startBtn.textContent = '▶ Старт';
                     startBtn.classList.remove('stop');
                     startBtn.classList.add('start');
@@ -612,53 +613,59 @@
             }, 1000);
         }
 
-        // Обработчики
-        startBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            startTimer();
-        });
+        // Обработчики кнопок таймера
+        startBtn.addEventListener('click', function(e) { e.stopPropagation(); startTimer(); });
+        resetBtn.addEventListener('click', function(e) { e.stopPropagation(); resetTimer(); });
 
-        resetBtn.addEventListener('click', function(e) {
+        incMin.addEventListener('click', function(e) {
             e.stopPropagation();
-            resetTimer();
-        });
-
-        incBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            let val = parseInt(minutesInput.value) || 0;
+            let val = parseInt(minInput.value) || 0;
             val = Math.min(val + 1, 999);
-            minutesInput.value = val;
-            // Если таймер не запущен, обновляем оставшееся время
-            if (!isRunning) {
-                resetTimer();
-            }
+            minInput.value = val;
+            if (!isRunning) resetTimer();
         });
-
-        decBtn.addEventListener('click', function(e) {
+        decMin.addEventListener('click', function(e) {
             e.stopPropagation();
-            let val = parseInt(minutesInput.value) || 0;
+            let val = parseInt(minInput.value) || 0;
             val = Math.max(val - 1, 0);
-            minutesInput.value = val;
-            if (!isRunning) {
-                resetTimer();
-            }
+            minInput.value = val;
+            if (!isRunning) resetTimer();
+        });
+        incSec.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let val = parseInt(secInput.value) || 0;
+            val = Math.min(val + 1, 59);
+            secInput.value = val;
+            if (!isRunning) resetTimer();
+        });
+        decSec.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let val = parseInt(secInput.value) || 0;
+            val = Math.max(val - 1, 0);
+            secInput.value = val;
+            if (!isRunning) resetTimer();
         });
 
-        minutesInput.addEventListener('change', function(e) {
+        minInput.addEventListener('change', function(e) {
             e.stopPropagation();
             let val = parseInt(this.value) || 0;
             if (val < 0) val = 0;
             this.value = val;
-            if (!isRunning) {
-                resetTimer();
-            }
+            if (!isRunning) resetTimer();
+        });
+        secInput.addEventListener('change', function(e) {
+            e.stopPropagation();
+            let val = parseInt(this.value) || 0;
+            if (val < 0) val = 0;
+            if (val > 59) val = 59;
+            this.value = val;
+            if (!isRunning) resetTimer();
         });
 
-        // Инициализация
         resetTimer();
     })();
 
-    // ===== ДАННЫЕ ПРОГРАММЫ И КАСТОМНЫЕ НАЗВАНИЯ =====
+    // ===== ДАННЫЕ ПРОГРАММЫ =====
     const data = {
         "Стоя": {
             "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
@@ -736,10 +743,11 @@
         customNames[index] = newName.trim() || defaultNames[index] || 'Техника';
         saveCustomNames();
         renderTechList();
-        updateAll(); // обновить состояние после перерисовки
+        // После перерисовки обновить состояние
+        updateAll();
     }
 
-    // ===== ГЕНЕРАЦИЯ СПИСКА (с поддержкой редактирования) =====
+    // ===== ГЕНЕРАЦИЯ СПИСКА =====
     function renderTechList() {
         const app = document.getElementById('app');
         let html = '';
@@ -778,30 +786,32 @@
             html += `</div>`;
         }
         app.innerHTML = html;
-        // Перепривязать обработчики для кнопок редактирования
-        document.querySelectorAll('.edit-name-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const idx = parseInt(this.dataset.idx);
-                startEditing(idx);
-            });
-        });
-        // Обновить состояние после рендера (кнопки видео и прогресс)
+
+        // Привязываем обработчики для кнопок редактирования (через делегирование на document)
+        // Также обновляем состояние
         updateAll();
     }
 
-    // ===== РЕДАКТИРОВАНИЕ НАЗВАНИЯ =====
+    // ===== РЕДАКТИРОВАНИЕ НАЗВАНИЯ (события через делегирование) =====
+    document.addEventListener('click', function(e) {
+        const editBtn = e.target.closest('.edit-name-btn');
+        if (editBtn) {
+            e.stopPropagation();
+            const idx = parseInt(editBtn.dataset.idx);
+            if (!isNaN(idx)) startEditing(idx);
+            return;
+        }
+    });
+
     function startEditing(idx) {
         const nameSpan = document.getElementById(`tech-name-${idx}`);
         if (!nameSpan) return;
         const currentName = getDisplayName(idx);
-        // Создаём input
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'tech-name-input';
         input.value = currentName;
         input.dataset.idx = idx;
-        // Заменяем span на input
         const wrapper = nameSpan.parentElement;
         wrapper.replaceChild(input, nameSpan);
         input.focus();
@@ -809,26 +819,18 @@
 
         function finishEditing() {
             const newName = input.value.trim() || defaultNames[idx] || 'Техника';
-            // Восстанавливаем span
             const newSpan = document.createElement('span');
             newSpan.className = 'tech-name';
             newSpan.id = `tech-name-${idx}`;
             newSpan.textContent = newName;
             wrapper.replaceChild(newSpan, input);
-            // Обновляем данные
             updateTechName(idx, newName);
         }
 
         input.addEventListener('blur', finishEditing);
         input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                input.blur();
-            }
-            if (e.key === 'Escape') {
-                input.value = currentName;
-                input.blur();
-            }
+            if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+            if (e.key === 'Escape') { input.value = currentName; input.blur(); }
         });
     }
 
@@ -864,8 +866,6 @@
                 } else if (typeof parsed === 'object' && parsed !== null) {
                     const entries = Object.entries(parsed);
                     history = entries.map(([tech, date]) => {
-                        // tech может быть старым названием, но мы используем индексы, поэтому пересохраним с индексами
-                        // При загрузке попробуем найти индекс по имени, если не найдём – оставим как есть
                         const idx = defaultNames.indexOf(tech);
                         return { tech, date, index: idx >= 0 ? idx : 0 };
                     });
@@ -932,7 +932,6 @@
             const dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
             let itemsHtml = '';
             for (const entry of entries) {
-                // Используем актуальное имя
                 const displayTech = getDisplayName(entry.index);
                 itemsHtml += `<div class="history-item">${displayTech}</div>`;
             }
@@ -1028,9 +1027,8 @@
             if (target.classList.contains('play-video')) {
                 const link = getLink(id);
                 if (link) {
-                    const idx = parseInt(id.split('-')[1]) - 1;
-                    const title = getDisplayName(idx);
-                    openModal(link, title);
+                    // Открываем в новой вкладке (Яндекс.Диск и другие)
+                    window.open(link, '_blank');
                 } else {
                     alert('Ссылка не установлена.');
                 }
@@ -1039,6 +1037,7 @@
             return;
         }
 
+        // Клик по строке техники (переключение статуса)
         const li = e.target.closest('.tech-item');
         if (li) {
             // Игнорируем клик по кнопке редактирования или инпуту
@@ -1059,70 +1058,6 @@
     document.getElementById('resetProgressBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         resetProgressOnly();
-    });
-
-    // ===== МОДАЛЬНОЕ ОКНО =====
-    const modal = document.getElementById('videoModal');
-    const videoEl = document.getElementById('modalVideo');
-    const sourceEl = document.getElementById('modalSource');
-    const iframeEl = document.getElementById('modalIframe');
-    const titleEl = document.getElementById('modalTitle');
-    const closeBtn = document.getElementById('modalClose');
-    const closeBtn2 = document.getElementById('modalCloseBtn');
-
-    function openModal(url, title) {
-        const isYouTube = url.match(/(youtube\.com|youtu\.be)/);
-        const isVimeo = url.match(/vimeo\.com/);
-        const isDirectVideo = /\.(mp4|webm|ogg|mov|avi)(\?.*)?$/i.test(url);
-
-        videoEl.style.display = 'none';
-        iframeEl.style.display = 'none';
-
-        if (isYouTube || isVimeo) {
-            let embedUrl = url;
-            if (isYouTube) {
-                const videoId = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-            } else if (isVimeo) {
-                const videoId = url.match(/vimeo\.com\/(\d+)/);
-                if (videoId) embedUrl = `https://player.vimeo.com/video/${videoId[1]}`;
-            }
-            iframeEl.src = embedUrl;
-            iframeEl.style.display = 'block';
-            titleEl.textContent = title || 'Видео (ссылка)';
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        } else if (isDirectVideo) {
-            sourceEl.src = url;
-            videoEl.load();
-            videoEl.style.display = 'block';
-            titleEl.textContent = title || 'Видео (прямая ссылка)';
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            videoEl.play().catch(() => {});
-        } else {
-            window.open(url, '_blank');
-        }
-    }
-
-    function closeModal() {
-        modal.classList.remove('active');
-        videoEl.pause();
-        sourceEl.src = '';
-        videoEl.load();
-        iframeEl.src = '';
-        videoEl.style.display = 'none';
-        iframeEl.style.display = 'none';
-        document.body.style.overflow = '';
-    }
-
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-    closeBtn.addEventListener('click', closeModal);
-    closeBtn2.addEventListener('click', closeModal);
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
     });
 
     // ===== ИНИЦИАЛИЗАЦИЯ =====
