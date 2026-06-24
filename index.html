@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== ВСЕ СТИЛИ БЕЗ ИЗМЕНЕНИЙ (копия из последнего HTML) ===== */
+        /* ===== ВСЕ СТИЛИ (без изменений, только добавим класс для индикации ссылки) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -332,6 +332,12 @@
         .btn-video.success:hover {
             background: rgba(75, 179, 75, 0.08);
         }
+        .btn-video.link-btn {
+            color: #f39c12;
+        }
+        .btn-video.link-btn:hover {
+            background: rgba(243, 156, 18, 0.08);
+        }
         .file-input-hidden {
             display: none;
         }
@@ -572,7 +578,7 @@
 </head>
 <body>
 <div class="container">
-    <!-- ===== ШАПКА ===== -->
+    <!-- ШАПКА -->
     <div class="header">
         <div class="header-logo">
             <span class="ronin">RONIN</span>
@@ -588,7 +594,7 @@
         </div>
     </div>
 
-    <!-- ===== СТАТИСТИКА ===== -->
+    <!-- СТАТИСТИКА -->
     <div class="stats-bar">
         <div class="stats-item">
             <span class="num" id="totalCount">50</span> техник всего
@@ -601,10 +607,10 @@
         </div>
     </div>
 
-    <!-- ===== КОНТЕЙНЕР ДЛЯ РАЗДЕЛОВ ===== -->
+    <!-- КОНТЕЙНЕР ДЛЯ РАЗДЕЛОВ -->
     <div id="app"></div>
 
-    <!-- ===== ИСТОРИЯ ===== -->
+    <!-- ИСТОРИЯ -->
     <div class="history-section" id="historySection">
         <div class="history-title">
             📋 История изученных техник
@@ -616,11 +622,11 @@
     </div>
 
     <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #edeef0; text-align: center; color: #6f7987; font-size: 13px;">
-        Нажмите «Выбрать» для загрузки видео · затем «Смотреть» для воспроизведения
+        Нажмите «Выбрать» для загрузки видео · «Ссылка» для вставки URL · «Смотреть» для просмотра
     </div>
 </div>
 
-<!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+<!-- МОДАЛЬНОЕ ОКНО -->
 <div class="modal-overlay" id="videoModal">
     <div class="modal-box">
         <div class="modal-header">
@@ -640,7 +646,7 @@
 </div>
 
 <script>
-    // ===== ДАННЫЕ ПРОГРАММЫ =====
+    // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
     const data = {
         "Стоя": {
             "Броски": [
@@ -731,7 +737,7 @@
         }
     };
 
-    // ===== ГЕНЕРАЦИЯ =====
+    // ===== ГЕНЕРАЦИЯ СПИСКА =====
     const app = document.getElementById('app');
     let totalItems = 0;
     const techNames = [];
@@ -761,6 +767,9 @@
                                 <button class="btn-video primary pick-video" data-target="${inputId}">
                                     <span class="icon">📁</span> Выбрать
                                 </button>
+                                <button class="btn-video link-btn link-video" data-target="${inputId}">
+                                    <span class="icon">🔗</span> Ссылка
+                                </button>
                                 <button class="btn-video success play-video" data-target="${inputId}" style="display:none;">
                                     <span class="icon">▶</span> Смотреть
                                 </button>
@@ -782,10 +791,68 @@
     // ===== СОСТОЯНИЕ =====
     const PROGRESS_KEY = 'ronin_progress';
     const HISTORY_KEY = 'ronin_history';
+    const LINKS_KEY = 'ronin_video_links'; // объект: { "video-1": "https://..." }
 
     let progress = new Array(totalItems).fill(false);
     let history = [];
+    let videoLinks = {};
 
+    // ===== РАБОТА С VIDEO LINKS =====
+    function loadLinks() {
+        const saved = localStorage.getItem(LINKS_KEY);
+        if (saved) {
+            try {
+                videoLinks = JSON.parse(saved);
+            } catch (e) { videoLinks = {}; }
+        } else {
+            videoLinks = {};
+        }
+    }
+
+    function saveLinks() {
+        localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks));
+    }
+
+    function setLink(id, url) {
+        if (url && url.trim() !== '') {
+            videoLinks[id] = url.trim();
+        } else {
+            delete videoLinks[id];
+        }
+        saveLinks();
+        updateVideoButtons(id);
+    }
+
+    function getLink(id) {
+        return videoLinks[id] || null;
+    }
+
+    // Обновление кнопок видео для конкретной техники
+    function updateVideoButtons(id) {
+        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
+        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
+        if (!playBtn) return;
+
+        const link = getLink(id);
+        // Проверяем также наличие файла в IndexedDB (будет позже)
+        // Если есть ссылка, показываем "Смотреть" и делаем её активной
+        if (link) {
+            playBtn.style.display = 'inline-flex';
+            playBtn.dataset.link = link; // сохраняем для быстрого доступа
+            playBtn.dataset.type = 'link';
+            // Меняем текст, чтобы показать, что это ссылка
+            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
+        } else {
+            // Проверяем, есть ли файл в videoMap (будет установлено позже)
+            // Пока просто скрываем, если нет файла
+            // Но файл может быть загружен позже, поэтому не скрываем, если файл есть
+            // Лучше проверить наличие в videoMap, но videoMap ещё не инициализирован
+            // Мы будем вызывать эту функцию после инициализации videoMap
+        }
+    }
+
+    // ===== ПРОГРЕСС И ИСТОРИЯ =====
     function loadProgress() {
         const saved = localStorage.getItem(PROGRESS_KEY);
         if (saved) {
@@ -841,6 +908,10 @@
         });
 
         renderHistory();
+        // Обновить все кнопки видео
+        document.querySelectorAll('.file-input-hidden').forEach(input => {
+            updateVideoButtons(input.id);
+        });
     }
 
     function toggleItem(idx) {
@@ -922,25 +993,78 @@
         updateAll();
     }
 
-    // ===== ИНИЦИАЛИЗАЦИЯ =====
-    loadProgress();
-    loadHistory();
+    // ===== РАБОТА С INDEXEDDB (для файлов) =====
+    const DB_NAME = 'RoninVideoDB';
+    const STORE_NAME = 'videos';
+    let db = null;
 
-    let needsSync = false;
-    for (let i = 0; i < totalItems; i++) {
-        if (progress[i]) {
-            const exists = history.some(entry => entry.index === i);
-            if (!exists) {
-                history.push({ tech: techNames[i], date: Date.now(), index: i });
-                needsSync = true;
-            }
-        }
-    }
-    if (needsSync) {
-        saveHistory();
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, 1);
+            request.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                }
+            };
+            request.onsuccess = function(e) {
+                db = e.target.result;
+                resolve(db);
+            };
+            request.onerror = function(e) {
+                reject(e.target.error);
+            };
+        });
     }
 
-    updateAll();
+    function saveVideoToDB(id, file) {
+        return new Promise((resolve, reject) => {
+            if (!db) return reject('База не открыта');
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const blob = e.target.result;
+                const record = { id: id, data: blob };
+                const request = store.put(record);
+                request.onsuccess = function() { resolve(); };
+                request.onerror = function() { reject(request.error); };
+            };
+            reader.onerror = function() { reject(reader.error); };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function getVideoFromDB(id) {
+        return new Promise((resolve, reject) => {
+            if (!db) return reject('База не открыта');
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.get(id);
+            request.onsuccess = function(e) {
+                const record = e.target.result;
+                if (record) {
+                    const blob = new Blob([record.data], { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    resolve(url);
+                } else {
+                    resolve(null);
+                }
+            };
+            request.onerror = function() { reject(request.error); };
+        });
+    }
+
+    function deleteVideoFromDB(id) {
+        return new Promise((resolve, reject) => {
+            if (!db) return reject('База не открыта');
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.delete(id);
+            request.onsuccess = function() { resolve(); };
+            request.onerror = function() { reject(request.error); };
+        });
+    }
 
     // ===== ОБРАБОТЧИКИ =====
     document.querySelectorAll('.tech-item').forEach(li => {
@@ -957,7 +1081,7 @@
     document.getElementById('clearHistoryBtn').addEventListener('click', clearHistory);
 
     // ===== ВИДЕО =====
-    const videoMap = new Map();
+    const videoMap = new Map(); // id -> { url, file, fromDB }
     let selectedCount = 0;
 
     function updateSelectedCount() {
@@ -965,64 +1089,134 @@
         if (el) el.textContent = selectedCount;
     }
 
+    // Обработка выбора файла
     document.querySelectorAll('.file-input-hidden').forEach(input => {
         const id = input.id;
         const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
         const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
 
-        if (!pickBtn || !playBtn) return;
+        if (!pickBtn || !playBtn || !linkBtn) return;
 
-        input.addEventListener('change', function(e) {
-            const file = this.files[0];
-            if (!file) {
-                if (videoMap.has(id)) {
-                    const old = videoMap.get(id);
-                    if (old.url) URL.revokeObjectURL(old.url);
-                    videoMap.delete(id);
-                    selectedCount--;
-                    updateSelectedCount();
-                }
-                playBtn.style.display = 'none';
-                pickBtn.innerHTML = '<span class="icon">📁</span> Выбрать';
-                return;
-            }
-
-            if (videoMap.has(id)) {
-                const old = videoMap.get(id);
-                if (old.url) URL.revokeObjectURL(old.url);
-            } else {
-                selectedCount++;
-            }
-
-            const url = URL.createObjectURL(file);
-            videoMap.set(id, { url, file });
-            updateSelectedCount();
-
-            playBtn.style.display = 'inline-flex';
-            pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
-            const label = input.dataset.label || 'Техника';
-            playBtn.dataset.label = label;
-        });
-
+        // Кнопка "Выбрать"
         pickBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             input.click();
         });
 
+        // Обработка выбора файла
+        input.addEventListener('change', async function(e) {
+            const file = this.files[0];
+            if (!file) {
+                // Удаляем файл из IndexedDB
+                await deleteVideoFromDB(id);
+                if (videoMap.has(id)) {
+                    const old = videoMap.get(id);
+                    if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
+                    videoMap.delete(id);
+                    selectedCount--;
+                    updateSelectedCount();
+                }
+                // Обновляем кнопки
+                updateVideoButtons(id);
+                return;
+            }
+
+            // Сохраняем файл в IndexedDB
+            await saveVideoToDB(id, file);
+            const url = URL.createObjectURL(file);
+            videoMap.set(id, { url, file, fromDB: false });
+            selectedCount++;
+            updateSelectedCount();
+
+            // Обновляем кнопки
+            updateVideoButtons(id);
+            // Показываем кнопку "Смотреть" (если нет ссылки)
+            const link = getLink(id);
+            if (!link) {
+                playBtn.style.display = 'inline-flex';
+                playBtn.dataset.type = 'file';
+                playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
+            }
+            pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
+        });
+
+        // Кнопка "Ссылка"
+        linkBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const currentLink = getLink(id);
+            let newLink = prompt('Введите ссылку на видео (YouTube, Яндекс.Диск и т.д.)\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
+            if (newLink !== null) {
+                // Если пользователь нажал "Отмена", newLink === null, ничего не делаем
+                if (newLink.trim() === '') {
+                    newLink = null;
+                }
+                setLink(id, newLink);
+                // Обновляем кнопку "Смотреть"
+                updateVideoButtons(id);
+                // Если ссылка есть, скрываем кнопку "Смотреть" от файла (если файла нет)
+                // Но файл может быть, поэтому просто обновляем
+                if (newLink) {
+                    playBtn.style.display = 'inline-flex';
+                    playBtn.dataset.type = 'link';
+                    playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
+                } else {
+                    // Проверяем, есть ли файл
+                    if (videoMap.has(id)) {
+                        playBtn.style.display = 'inline-flex';
+                        playBtn.dataset.type = 'file';
+                        playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
+                    } else {
+                        playBtn.style.display = 'none';
+                    }
+                }
+            }
+        });
+
+        // Кнопка "Смотреть"
         playBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            const stored = videoMap.get(id);
-            if (!stored) {
-                alert('Видео не выбрано. Нажмите "Выбрать" и укажите файл.');
+            const link = getLink(id);
+            if (link) {
+                // Открываем ссылку в новой вкладке
+                window.open(link, '_blank');
                 return;
             }
-            const videoUrl = stored.url;
-            const title = this.dataset.label || 'Техника';
-            openModal(videoUrl, title);
+            // Если ссылки нет, проверяем файл
+            const stored = videoMap.get(id);
+            if (stored && stored.url) {
+                const title = input.dataset.label || 'Техника';
+                openModal(stored.url, title);
+                return;
+            }
+            alert('Видео не прикреплено. Загрузите файл или вставьте ссылку.');
         });
     });
+
+    // Функция обновления кнопок (вызывается при загрузке и после изменения ссылки/файла)
+    function updateVideoButtons(id) {
+        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
+        if (!playBtn) return;
+
+        const link = getLink(id);
+        const hasFile = videoMap.has(id);
+
+        if (link) {
+            playBtn.style.display = 'inline-flex';
+            playBtn.dataset.type = 'link';
+            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
+        } else if (hasFile) {
+            playBtn.style.display = 'inline-flex';
+            playBtn.dataset.type = 'file';
+            playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
+        } else {
+            playBtn.style.display = 'none';
+        }
+    }
 
     // ===== МОДАЛЬНОЕ ОКНО =====
     const modal = document.getElementById('videoModal');
@@ -1058,7 +1252,7 @@
 
     window.addEventListener('beforeunload', function() {
         for (const [id, stored] of videoMap) {
-            if (stored.url) URL.revokeObjectURL(stored.url);
+            if (stored.url && !stored.fromDB) URL.revokeObjectURL(stored.url);
         }
     });
 
@@ -1068,7 +1262,7 @@
     videoStat.innerHTML = `<span class="num" id="selectedCount">0</span> видео выбрано`;
     statsBar.appendChild(videoStat);
 
-    // ===== РЕГИСТРАЦИЯ SERVICE WORKER =====
+    // ===== SERVICE WORKER =====
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register('sw.js').then(function(registration) {
@@ -1078,6 +1272,57 @@
             });
         });
     }
+
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    async function init() {
+        await openDB();
+        loadProgress();
+        loadHistory();
+        loadLinks();
+
+        // Восстановление файлов из IndexedDB
+        const inputs = document.querySelectorAll('.file-input-hidden');
+        for (const input of inputs) {
+            const id = input.id;
+            const url = await getVideoFromDB(id);
+            if (url) {
+                videoMap.set(id, { url, file: null, fromDB: true });
+                selectedCount++;
+                // Сохраняем ссылку в data-атрибут для плеера (не нужно)
+                // Обновляем кнопки
+                updateVideoButtons(id);
+                // Показываем кнопку "Смотреть", если нет ссылки
+                const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+                if (playBtn && !getLink(id)) {
+                    playBtn.style.display = 'inline-flex';
+                    playBtn.dataset.type = 'file';
+                    playBtn.innerHTML = '<span class="icon">▶</span> Смотреть';
+                }
+                const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
+                if (pickBtn) pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
+            }
+        }
+        updateSelectedCount();
+
+        // Синхронизация прогресса и истории
+        let needsSync = false;
+        for (let i = 0; i < totalItems; i++) {
+            if (progress[i]) {
+                const exists = history.some(entry => entry.index === i);
+                if (!exists) {
+                    history.push({ tech: techNames[i], date: Date.now(), index: i });
+                    needsSync = true;
+                }
+            }
+        }
+        if (needsSync) {
+            saveHistory();
+        }
+
+        updateAll();
+    }
+
+    init().catch(console.error);
 </script>
 </body>
 </html>
