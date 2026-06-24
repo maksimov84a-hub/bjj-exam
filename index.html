@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== ВСЕ СТИЛИ (без изменений, кроме удаления custom-звука) ===== */
+        /* ===== СТИЛИ (с изменениями для загрузки звука) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -250,25 +250,36 @@
             font-size: 14px;
         }
 
-        /* Упрощённый блок выбора звука – только select */
+        /* Блок загрузки звука (только свой) */
         .timer-sound-group {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
-        .timer-sound-group select {
+        .custom-sound-btn {
             background: #2d3f4f;
             border: none;
             color: #ffffff;
-            font-size: 14px;
             padding: 4px 14px;
             border-radius: 20px;
-            outline: none;
-            font-family: inherit;
+            font-size: 14px;
             cursor: pointer;
+            font-family: inherit;
             height: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .timer-sound-group select option { background: #1a2632; }
+        .custom-sound-btn:hover { background: #3d5a73; }
+        .custom-sound-label {
+            color: #aaa;
+            font-size: 13px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .file-input-hidden { display: none; }
 
         .stats-bar {
             display: flex;
@@ -452,7 +463,8 @@
             .timer-btn { font-size: 18px; padding: 10px 20px; min-height: 54px; min-width: auto; width: 100%; }
             .timer-set-group { justify-content: center; flex-wrap: wrap; }
             .timer-set-group input { width: 38px; font-size: 18px; }
-            .timer-sound-group select { font-size: 13px; height: 36px; }
+            .timer-sound-group { justify-content: center; flex-wrap: wrap; }
+            .custom-sound-btn { height: 36px; font-size: 13px; }
             .stats-bar { gap: 12px; padding: 8px 0 12px; }
             .stats-item { font-size: 12px; }
             .stats-item .num { font-size: 13px; }
@@ -521,7 +533,7 @@
         </div>
     </div>
 
-    <!-- ===== ТАЙМЕР (упрощённый) ===== -->
+    <!-- ===== ТАЙМЕР (только свой звук) ===== -->
     <div class="timer-wrapper">
         <div class="timer-display" id="timerDisplay">05:00</div>
         <div class="timer-controls">
@@ -536,13 +548,11 @@
                 <span class="timer-set-label">с</span>
                 <button class="set-btn" id="timerIncSec">+</button>
             </div>
-            <!-- Только выбор звука (без загрузки) -->
+            <!-- Блок загрузки звука (только свой) -->
             <div class="timer-sound-group">
-                <select id="timerSoundSelect">
-                    <option value="beep">Стандартный</option>
-                    <option value="beep2">Писк</option>
-                    <option value="silence">Тишина</option>
-                </select>
+                <button class="custom-sound-btn" id="customSoundBtn">📁 Загрузить звук</button>
+                <span class="custom-sound-label" id="customSoundLabel">не выбран</span>
+                <input type="file" accept="audio/*" id="customSoundInput" class="file-input-hidden">
             </div>
             <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
             <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
@@ -583,7 +593,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '1.7';
+    const APP_VERSION = '1.8';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -606,29 +616,15 @@
         const decMin = document.getElementById('timerDecMin');
         const incSec = document.getElementById('timerIncSec');
         const decSec = document.getElementById('timerDecSec');
-        const soundSelect = document.getElementById('timerSoundSelect');
-
-        const SOUND_KEY = 'ronin_timer_sound';
+        const customSoundBtn = document.getElementById('customSoundBtn');
+        const customSoundInput = document.getElementById('customSoundInput');
+        const customSoundLabel = document.getElementById('customSoundLabel');
 
         let totalSeconds = 300;
         let remaining = totalSeconds;
         let timerId = null;
         let isRunning = false;
-
-        // Загрузка сохранённого звука
-        function loadSoundSettings() {
-            const savedSound = localStorage.getItem(SOUND_KEY);
-            if (savedSound) {
-                soundSelect.value = savedSound;
-            } else {
-                soundSelect.value = 'beep';
-            }
-        }
-
-        // Сохранение выбранного звука
-        function saveSoundSettings() {
-            localStorage.setItem(SOUND_KEY, soundSelect.value);
-        }
+        let customSoundURL = null;
 
         function formatTime(sec) {
             const m = Math.floor(sec / 60);
@@ -637,25 +633,16 @@
         }
         function updateDisplay() { display.textContent = formatTime(remaining); }
 
-        function playSound(type) {
-            if (type === 'silence') return;
-            try {
-                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const count = (type === 'beep2') ? 3 : 2;
-                const freq = (type === 'beep2') ? 600 : 800;
-                for (let i = 0; i < count; i++) {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.frequency.value = freq;
-                    osc.type = 'square';
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.5);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.5 + 0.4);
-                    osc.start(audioCtx.currentTime + i * 0.5);
-                    osc.stop(audioCtx.currentTime + i * 0.5 + 0.4);
+        function playSound() {
+            if (customSoundURL) {
+                try {
+                    const audio = new Audio(customSoundURL);
+                    audio.play().catch(e => console.warn('Ошибка воспроизведения звука:', e));
+                } catch (e) {
+                    console.warn('Ошибка воспроизведения звука:', e);
                 }
-            } catch (e) { console.warn('Звук не поддерживается:', e); }
+            }
+            // Если звук не загружен – ничего не делаем
         }
 
         function stopTimer() {
@@ -699,8 +686,7 @@
                 updateDisplay();
                 if (remaining <= 0) {
                     stopTimer();
-                    const sound = soundSelect.value;
-                    playSound(sound);
+                    playSound();
                     startBtn.textContent = '▶ Старт';
                     startBtn.classList.remove('stop');
                     startBtn.classList.add('start');
@@ -757,17 +743,30 @@
             if (!isRunning) resetTimer();
         });
 
-        // Сохранение выбора звука при изменении
-        soundSelect.addEventListener('change', function() {
-            saveSoundSettings();
+        // Загрузка собственного звука
+        customSoundBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            customSoundInput.click();
+        });
+        customSoundInput.addEventListener('change', function(e) {
+            e.stopPropagation();
+            const file = this.files[0];
+            if (file) {
+                if (customSoundURL) {
+                    URL.revokeObjectURL(customSoundURL);
+                }
+                customSoundURL = URL.createObjectURL(file);
+                customSoundLabel.textContent = file.name;
+            } else {
+                customSoundLabel.textContent = 'не выбран';
+            }
+            this.value = '';
         });
 
-        // Инициализация
-        loadSoundSettings();
         resetTimer();
     })();
 
-    // ===== ДАННЫЕ ПРОГРАММЫ (без изменений) =====
+    // ===== ОСТАЛЬНОЙ КОД (прогресс, история, ссылки, редактирование) – без изменений =====
     const data = {
         "Стоя": {
             "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
@@ -798,7 +797,6 @@
         }
     };
 
-    // ===== ПОЛУЧАЕМ ВСЕ НАЗВАНИЯ =====
     function extractTechNames() {
         const names = [];
         for (const [sectionTitle, subs] of Object.entries(data)) {
@@ -813,7 +811,6 @@
     const defaultNames = extractTechNames();
     const totalItems = defaultNames.length;
 
-    // ===== КАСТОМНЫЕ НАЗВАНИЯ (localStorage) =====
     const CUSTOM_NAMES_KEY = 'ronin_custom_names';
     function loadCustomNames() {
         const saved = localStorage.getItem(CUSTOM_NAMES_KEY);
@@ -838,7 +835,6 @@
         updateAll();
     }
 
-    // ===== ГЕНЕРАЦИЯ СПИСКА =====
     function renderTechList() {
         const app = document.getElementById('app');
         let html = '';
@@ -880,7 +876,6 @@
         updateAll();
     }
 
-    // ===== РЕДАКТИРОВАНИЕ =====
     document.addEventListener('click', function(e) {
         const editBtn = e.target.closest('.edit-name-btn');
         if (editBtn) {
@@ -922,7 +917,6 @@
         });
     }
 
-    // ===== СОСТОЯНИЕ ПРОГРЕССА И ИСТОРИИ =====
     const PROGRESS_KEY = 'ronin_progress';
     const HISTORY_KEY = 'ronin_history';
     const LINKS_KEY = 'ronin_video_links';
@@ -1053,7 +1047,6 @@
         updateAll();
     }
 
-    // ===== РАБОТА С VIDEO LINKS =====
     function loadLinks() {
         const saved = localStorage.getItem(LINKS_KEY);
         if (saved) {
@@ -1093,7 +1086,6 @@
         }
     }
 
-    // ===== ОБРАБОТЧИКИ =====
     document.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-video');
         if (target) {
@@ -1144,7 +1136,6 @@
         resetProgressOnly();
     });
 
-    // ===== ИНИЦИАЛИЗАЦИЯ =====
     function init() {
         loadProgress();
         loadHistory();
