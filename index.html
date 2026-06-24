@@ -46,12 +46,12 @@
             z-index: 10;
         }
 
-        /* ===== ШАПКА С ТАЙМЕРОМ ===== */
+        /* ===== ШАПКА (без таймера) ===== */
         .header {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: -20px -20px 20px -20px;
+            margin: -20px -20px 16px -20px;
             padding: 16px 20px 12px;
             background: #1a2632;
             border-bottom: 2px solid #1a1a1a;
@@ -104,142 +104,6 @@
             text-transform: uppercase;
             font-weight: 300;
         }
-
-        /* Таймер в шапке */
-        .timer-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            flex: 1 1 auto;
-        }
-        .timer-display {
-            font-family: 'Courier New', monospace;
-            font-size: 2.0rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: 2px;
-            min-width: 90px;
-            text-align: center;
-            background: rgba(0,0,0,0.3);
-            padding: 2px 12px;
-            border-radius: 8px;
-        }
-        .timer-controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 6px;
-        }
-        .timer-btn {
-            background: #2d3f4f;
-            border: none;
-            color: #ffffff;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.15s;
-            touch-action: manipulation;
-            font-family: inherit;
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 80px;
-        }
-        .timer-btn:hover { background: #3d5a73; }
-        .timer-btn:active { transform: scale(0.96); }
-        .timer-btn.start { background: #27ae60; }
-        .timer-btn.start:hover { background: #2ecc71; }
-        .timer-btn.stop { background: #c0392b; }
-        .timer-btn.stop:hover { background: #e74c3c; }
-        .timer-btn.reset { background: #6f7f8f; }
-        .timer-btn.reset:hover { background: #8a9aaa; }
-
-        .timer-set-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            background: #2d3f4f;
-            padding: 2px 10px;
-            border-radius: 30px;
-        }
-        .timer-set-group input {
-            width: 36px;
-            background: transparent;
-            border: none;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            text-align: center;
-            padding: 2px 0;
-            outline: none;
-            font-family: inherit;
-        }
-        .timer-set-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
-        .timer-set-group input[type=number] { -moz-appearance: textfield; }
-        .timer-set-group .set-btn {
-            background: transparent;
-            border: none;
-            color: #cccccc;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 0 4px;
-            line-height: 1;
-        }
-        .timer-set-group .set-btn:hover { color: #ffffff; }
-        .timer-set-label {
-            color: #aaaaaa;
-            font-size: 12px;
-        }
-
-        .timer-sound-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .timer-sound-group select {
-            background: #2d3f4f;
-            border: none;
-            color: #ffffff;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 20px;
-            outline: none;
-            font-family: inherit;
-            cursor: pointer;
-            height: 32px;
-        }
-        .timer-sound-group select option { background: #1a2632; }
-        .custom-sound-btn {
-            background: #2d3f4f;
-            border: none;
-            color: #ffffff;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: inherit;
-            height: 32px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .custom-sound-btn:hover { background: #3d5a73; }
-        .custom-sound-label {
-            color: #aaa;
-            font-size: 11px;
-            max-width: 80px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .file-input-hidden { display: none; }
-
         .header-meta {
             display: flex;
             justify-content: center;
@@ -288,7 +152,149 @@
         .btn-reset:hover { background: #333; border-color: #888; }
         .btn-reset:active { transform: scale(0.97); }
 
-        /* ===== СТАТИСТИКА, СПИСОК, ИСТОРИЯ ===== */
+        /* ===== ТАЙМЕР (отдельный блок под шапкой) ===== */
+        .timer-wrapper {
+            background: #1a2632;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #3a4a5e;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .timer-display {
+            font-family: 'Courier New', monospace;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 4px;
+            min-width: 160px;
+            text-align: center;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 16px;
+            border-radius: 12px;
+            flex: 0 1 auto;
+        }
+        .timer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 auto;
+            justify-content: flex-end;
+        }
+        .timer-btn {
+            background: #2d3f4f;
+            border: none;
+            color: #ffffff;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            touch-action: manipulation;
+            font-family: inherit;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+        .timer-btn:hover { background: #3d5a73; }
+        .timer-btn:active { transform: scale(0.96); }
+        .timer-btn.start { background: #27ae60; }
+        .timer-btn.start:hover { background: #2ecc71; }
+        .timer-btn.stop { background: #c0392b; }
+        .timer-btn.stop:hover { background: #e74c3c; }
+        .timer-btn.reset { background: #6f7f8f; }
+        .timer-btn.reset:hover { background: #8a9aaa; }
+
+        .timer-set-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #2d3f4f;
+            padding: 2px 12px;
+            border-radius: 30px;
+        }
+        .timer-set-group input {
+            width: 40px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding: 2px 0;
+            outline: none;
+            font-family: inherit;
+        }
+        .timer-set-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .timer-set-group input[type=number] { -moz-appearance: textfield; }
+        .timer-set-group .set-btn {
+            background: transparent;
+            border: none;
+            color: #cccccc;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .timer-set-group .set-btn:hover { color: #ffffff; }
+        .timer-set-label {
+            color: #aaaaaa;
+            font-size: 13px;
+        }
+
+        .timer-sound-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .timer-sound-group select {
+            background: #2d3f4f;
+            border: none;
+            color: #ffffff;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            outline: none;
+            font-family: inherit;
+            cursor: pointer;
+            height: 36px;
+        }
+        .timer-sound-group select option { background: #1a2632; }
+        .custom-sound-btn {
+            background: #2d3f4f;
+            border: none;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .custom-sound-btn:hover { background: #3d5a73; }
+        .custom-sound-label {
+            color: #aaa;
+            font-size: 12px;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .file-input-hidden { display: none; }
+
+        /* ===== СТАТИСТИКА ===== */
         .stats-bar {
             display: flex;
             gap: 20px;
@@ -306,6 +312,8 @@
             color: #6f7987;
         }
         .stats-item .num { font-weight: 600; font-size: 15px; color: #000000; }
+
+        /* ===== СПИСОК ТЕХНИК ===== */
         .section { margin-bottom: 24px; }
         .section-title { font-weight: 600; font-size: 18px; color: #000000; padding: 8px 0 6px; border-bottom: 2px solid #c0392b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .section-title .section-num { display: inline-block; background: #c0392b; color: #fff; font-size: 13px; font-weight: 600; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; flex-shrink: 0; }
@@ -350,15 +358,17 @@
         ul li.done::before { background: #27ae60; color: #ffffff; content: "✓"; font-size: 18px; }
         ul li.done .tech-name { color: #27ae60; }
         ul li:hover { background: #f8f9fa; }
+
         .tech-line {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            justify-content: space-between;
             gap: 6px 12px;
             pointer-events: none;
         }
         .tech-name-wrapper {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 8px;
             flex: 1 1 auto;
@@ -399,7 +409,7 @@
             transition: all 0.15s;
             flex-shrink: 0;
             touch-action: manipulation;
-            pointer-events: auto; /* чтобы клик не перехватывался строкой */
+            pointer-events: auto; /* чтобы не перехватывался клик строкой */
         }
         .edit-name-btn:hover { background: #c0392b; border-color: #c0392b; color: #ffffff; }
         .edit-name-btn:active { transform: scale(0.9); }
@@ -408,9 +418,10 @@
             display: flex;
             flex-wrap: wrap;
             gap: 4px;
-            margin-left: auto;
-            flex-shrink: 0;
             pointer-events: auto;
+            width: 100%;
+            justify-content: flex-start;
+            padding-left: 0;
         }
         .btn-video {
             display: inline-flex;
@@ -441,6 +452,7 @@
         .btn-video.success:hover { background: rgba(75, 179, 75, 0.08); }
         .btn-video.success.hidden { display: none; }
 
+        /* ===== ИСТОРИЯ ===== */
         .history-section { margin-top: 28px; padding-top: 16px; border-top: 2px solid #e4e6e8; }
         .history-title { font-weight: 600; font-size: 17px; color: #1a1a1a; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .history-empty { color: #6f7987; font-size: 14px; padding: 8px 0; text-align: center; background: #f8f9fa; border-radius: 8px; }
@@ -461,10 +473,13 @@
             .header-top { flex-direction: column; align-items: stretch; }
             .header-logo { text-align: center; }
             .header-logo .ronin, .header-logo .family { font-size: 24px; }
-            .timer-container { justify-content: center; }
-            .timer-display { font-size: 1.6rem; min-width: 70px; }
-            .timer-btn { font-size: 14px; padding: 6px 14px; min-height: 38px; min-width: 60px; }
-            .timer-set-group input { width: 30px; font-size: 14px; }
+            .timer-wrapper { flex-direction: column; align-items: stretch; padding: 12px; }
+            .timer-display { font-size: 2.8rem; min-width: auto; }
+            .timer-controls { justify-content: center; }
+            .timer-btn { font-size: 14px; padding: 6px 16px; min-height: 40px; min-width: 80px; }
+            .timer-set-group input { width: 34px; font-size: 16px; }
+            .timer-sound-group select { font-size: 12px; padding: 2px 10px; height: 32px; }
+            .custom-sound-btn { height: 32px; font-size: 12px; }
             .stats-bar { gap: 12px; padding: 8px 0 12px; }
             .stats-item { font-size: 12px; }
             .stats-item .num { font-size: 13px; }
@@ -481,9 +496,9 @@
         }
         @media (max-width: 400px) {
             .header-logo .ronin, .header-logo .family { font-size: 20px; }
-            .timer-display { font-size: 1.4rem; min-width: 60px; }
-            .timer-btn { font-size: 12px; padding: 4px 10px; min-height: 34px; min-width: 50px; }
-            .timer-set-group input { width: 26px; font-size: 12px; }
+            .timer-display { font-size: 2.2rem; }
+            .timer-btn { font-size: 12px; padding: 4px 12px; min-height: 34px; min-width: 60px; }
+            .timer-set-group input { width: 28px; font-size: 14px; }
             .edit-name-btn { width: 28px; height: 28px; font-size: 14px; }
             ul li { padding-left: 34px; }
             ul li::before { width: 24px; height: 24px; font-size: 10px; line-height: 24px; }
@@ -500,7 +515,7 @@
             .header-sub { color: #333; border-top-color: #ccc; }
             .header-meta { color: #333; }
             .header-meta .badge-blue { background: #1a4a6e; color: #fff; }
-            .btn-video, .btn-reset, .btn-clear-history, .timer-container { display: none !important; }
+            .btn-video, .btn-reset, .btn-clear-history, .timer-wrapper { display: none !important; }
             ul li { border-bottom-color: #ccc; cursor: default; }
             ul li::before { background: #eee; color: #000; }
             ul li.done::before { background: #27ae60; color: #fff; content: "✓"; }
@@ -517,7 +532,7 @@
 <div class="container">
     <div class="version-badge" id="versionBadge"></div>
 
-    <!-- ===== ШАПКА С ТАЙМЕРОМ ===== -->
+    <!-- ===== ШАПКА (без таймера) ===== -->
     <div class="header">
         <div class="header-top">
             <div class="header-logo">
@@ -525,38 +540,8 @@
                 <div class="family">FAMILY</div>
                 <div class="header-sub">GI &amp; NOGI BJJ</div>
             </div>
-
-            <div class="timer-container">
-                <div class="timer-display" id="timerDisplay">05:00</div>
-                <div class="timer-controls">
-                    <!-- Настройка времени -->
-                    <div class="timer-set-group">
-                        <button class="set-btn" id="timerDecMin">−</button>
-                        <input type="number" id="timerMinutesInput" value="5" min="0" max="999">
-                        <span class="timer-set-label">м</span>
-                        <button class="set-btn" id="timerIncMin">+</button>
-                        <span style="color:#888; margin:0 2px;">:</span>
-                        <button class="set-btn" id="timerDecSec">−</button>
-                        <input type="number" id="timerSecondsInput" value="0" min="0" max="59">
-                        <span class="timer-set-label">с</span>
-                        <button class="set-btn" id="timerIncSec">+</button>
-                    </div>
-                    <!-- Выбор звука и загрузка своего -->
-                    <div class="timer-sound-group">
-                        <select id="timerSoundSelect">
-                            <option value="beep">Стандартный</option>
-                            <option value="beep2">Писк</option>
-                            <option value="silence">Тишина</option>
-                            <option value="custom">Свой звук</option>
-                        </select>
-                        <button class="custom-sound-btn" id="customSoundBtn">📁</button>
-                        <span class="custom-sound-label" id="customSoundLabel">нет</span>
-                        <input type="file" accept="audio/*" id="customSoundInput" class="file-input-hidden">
-                    </div>
-                </div>
-            </div>
+            <div style="flex:1; min-width:40px;"></div>
         </div>
-
         <div class="header-meta">
             <span>Экзамен <span class="badge-blue">синий пояс</span></span>
             <span class="progress-text">Сдано: <span id="doneCount">0</span> / <span id="totalCountDisplay">50</span></span>
@@ -564,10 +549,38 @@
         </div>
     </div>
 
-    <!-- ===== ТАЙМЕР КНОПКИ (большие, вынесены из шапки для чистоты) ===== -->
-    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; justify-content:center;">
-        <button class="timer-btn start" id="timerStartBtn" style="flex:1; min-width:120px;">▶ Старт</button>
-        <button class="timer-btn reset" id="timerResetBtn" style="flex:1; min-width:120px;">↺ Сброс</button>
+    <!-- ===== ТАЙМЕР (отдельный блок под шапкой) ===== -->
+    <div class="timer-wrapper">
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        <div class="timer-controls">
+            <!-- Настройка времени -->
+            <div class="timer-set-group">
+                <button class="set-btn" id="timerDecMin">−</button>
+                <input type="number" id="timerMinutesInput" value="5" min="0" max="999">
+                <span class="timer-set-label">м</span>
+                <button class="set-btn" id="timerIncMin">+</button>
+                <span style="color:#888; margin:0 2px;">:</span>
+                <button class="set-btn" id="timerDecSec">−</button>
+                <input type="number" id="timerSecondsInput" value="0" min="0" max="59">
+                <span class="timer-set-label">с</span>
+                <button class="set-btn" id="timerIncSec">+</button>
+            </div>
+            <!-- Выбор звука и загрузка своего -->
+            <div class="timer-sound-group">
+                <select id="timerSoundSelect">
+                    <option value="beep">Стандартный</option>
+                    <option value="beep2">Писк</option>
+                    <option value="silence">Тишина</option>
+                    <option value="custom">Свой звук</option>
+                </select>
+                <button class="custom-sound-btn" id="customSoundBtn">📁</button>
+                <span class="custom-sound-label" id="customSoundLabel">нет</span>
+                <input type="file" accept="audio/*" id="customSoundInput" class="file-input-hidden">
+            </div>
+            <!-- Кнопки управления -->
+            <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
+            <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
+        </div>
     </div>
 
     <div class="stats-bar">
@@ -604,7 +617,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '1.3';
+    const APP_VERSION = '1.4';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -650,7 +663,6 @@
             try {
                 let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (type === 'custom' && customSoundURL) {
-                    // Воспроизведение загруженного аудио
                     const audio = new Audio(customSoundURL);
                     audio.play().catch(e => console.warn('Ошибка воспроизведения кастомного звука:', e));
                     return;
@@ -771,7 +783,6 @@
             if (!isRunning) resetTimer();
         });
 
-        // Загрузка собственного звука
         customSoundBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             customSoundInput.click();
@@ -866,7 +877,7 @@
         updateAll();
     }
 
-    // ===== ГЕНЕРАЦИЯ СПИСКА =====
+    // ===== ГЕНЕРАЦИЯ СПИСКА (с кнопками под названием) =====
     function renderTechList() {
         const app = document.getElementById('app');
         let html = '';
@@ -887,14 +898,14 @@
                                     <span class="tech-name" id="tech-name-${idx}">${displayName}</span>
                                     <button class="edit-name-btn" data-idx="${idx}" title="Редактировать название">✎</button>
                                 </div>
-                                <span class="video-btn-group">
-                                    <button class="btn-video link-btn link-video" data-target="${inputId}">
-                                        <span class="icon">🔗</span> Ссылка
-                                    </button>
-                                    <button class="btn-video success play-video hidden" data-target="${inputId}">
-                                        <span class="icon">▶</span> Смотреть
-                                    </button>
-                                </span>
+                            </div>
+                            <div class="video-btn-group">
+                                <button class="btn-video link-btn link-video" data-target="${inputId}">
+                                    <span class="icon">🔗</span> Ссылка
+                                </button>
+                                <button class="btn-video success play-video hidden" data-target="${inputId}">
+                                    <span class="icon">▶</span> Смотреть
+                                </button>
                             </div>
                         </li>
                     `;
