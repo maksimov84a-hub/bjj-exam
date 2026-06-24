@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== ВСЕ СТИЛИ (добавлены стили для таймера) ===== */
+        /* ===== СТИЛИ (с добавлениями для таймера и редактирования) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -97,15 +97,15 @@
         }
         .timer-controls {
             display: flex;
-            gap: 8px;
             flex-wrap: wrap;
-            justify-content: center;
+            align-items: center;
+            gap: 6px;
         }
         .timer-btn {
             background: #2d3f4f;
             border: none;
             color: #ffffff;
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 600;
@@ -126,6 +126,85 @@
         .timer-btn.stop:hover { background: #e74c3c; }
         .timer-btn.reset { background: #6f7f8f; }
         .timer-btn.reset:hover { background: #8a9aaa; }
+        .timer-set-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #2d3f4f;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .timer-set-group input {
+            width: 50px;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            padding: 2px 0;
+            outline: none;
+            font-family: inherit;
+        }
+        .timer-set-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .timer-set-group input[type=number] { -moz-appearance: textfield; }
+        .timer-set-group .set-btn {
+            background: transparent;
+            border: none;
+            color: #cccccc;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .timer-set-group .set-btn:hover { color: #ffffff; }
+        .timer-set-label {
+            color: #aaaaaa;
+            font-size: 12px;
+            margin-left: 2px;
+        }
+
+        /* ===== РЕДАКТИРОВАНИЕ НАЗВАНИЙ ===== */
+        .tech-name-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .tech-name {
+            font-weight: 400;
+            font-size: 15px;
+            color: #000000;
+            word-break: break-word;
+            transition: color 0.2s;
+            flex: 1 1 auto;
+        }
+        .tech-name-input {
+            font-size: 15px;
+            font-family: inherit;
+            border: 1px solid #c0392b;
+            border-radius: 6px;
+            padding: 2px 8px;
+            width: 100%;
+            min-width: 100px;
+            background: #fff;
+            color: #000;
+            outline: none;
+        }
+        .edit-name-btn {
+            background: transparent;
+            border: none;
+            color: #6f7987;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 2px;
+            transition: color 0.15s;
+            flex-shrink: 0;
+        }
+        .edit-name-btn:hover { color: #c0392b; }
+        .edit-name-btn:active { transform: scale(0.9); }
 
         /* ===== СТАТИСТИКА, СПИСОК, ИСТОРИЯ (без изменений) ===== */
         .stats-bar {
@@ -199,14 +278,6 @@
             align-items: center;
             gap: 6px 12px;
             pointer-events: none;
-        }
-        .tech-name {
-            font-weight: 400;
-            font-size: 15px;
-            color: #000000;
-            flex: 1 1 auto;
-            word-break: break-word;
-            transition: color 0.2s;
         }
         .video-btn-group {
             display: flex;
@@ -301,7 +372,9 @@
             .modal-close { width: 32px; height: 32px; font-size: 18px; }
             .modal-footer .btn-primary { padding: 6px 16px; font-size: 13px; }
             .timer-display { font-size: 1.8rem; min-width: 90px; }
-            .timer-btn { font-size: 12px; padding: 4px 12px; min-height: 32px; }
+            .timer-btn { font-size: 12px; padding: 4px 10px; min-height: 32px; }
+            .timer-set-group input { width: 40px; font-size: 14px; }
+            .edit-name-btn { font-size: 12px; }
         }
         @media (max-width: 400px) {
             .header-logo .ronin, .header-logo .family { font-size: 22px; }
@@ -313,6 +386,7 @@
             .section-title { font-size: 14px; }
             .subsection-title { font-size: 12px; padding: 3px 0 3px 8px; }
             .timer-display { font-size: 1.5rem; min-width: 70px; }
+            .timer-set-group input { width: 34px; font-size: 12px; }
         }
         @media print {
             body { background: #fff; padding: 0.3in; }
@@ -359,6 +433,12 @@
     <div class="timer-container">
         <div class="timer-display" id="timerDisplay">05:00</div>
         <div class="timer-controls">
+            <div class="timer-set-group">
+                <button class="set-btn" id="timerDecMin">−</button>
+                <input type="number" id="timerMinutesInput" value="5" min="0" max="999">
+                <button class="set-btn" id="timerIncMin">+</button>
+                <span class="timer-set-label">мин</span>
+            </div>
             <button class="timer-btn start" id="timerStartBtn">▶ Старт</button>
             <button class="timer-btn reset" id="timerResetBtn">↺ Сброс</button>
         </div>
@@ -418,7 +498,7 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '0.9';
+    const APP_VERSION = '1.0';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
     // ===== SERVICE WORKER =====
@@ -430,14 +510,18 @@
         });
     }
 
-    // ===== ТАЙМЕР =====
+    // ===== ТАЙМЕР С НАСТРОЙКОЙ =====
     (function() {
         const display = document.getElementById('timerDisplay');
         const startBtn = document.getElementById('timerStartBtn');
         const resetBtn = document.getElementById('timerResetBtn');
+        const minutesInput = document.getElementById('timerMinutesInput');
+        const incBtn = document.getElementById('timerIncMin');
+        const decBtn = document.getElementById('timerDecMin');
 
-        const TOTAL_SECONDS = 300; // 5 минут
-        let remaining = TOTAL_SECONDS;
+        const DEFAULT_MINUTES = 5;
+        let totalSeconds = DEFAULT_MINUTES * 60;
+        let remaining = totalSeconds;
         let timerId = null;
         let isRunning = false;
 
@@ -454,7 +538,6 @@
         function playBeep() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                // Два коротких гудка
                 for (let i = 0; i < 2; i++) {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -485,7 +568,10 @@
 
         function resetTimer() {
             stopTimer();
-            remaining = TOTAL_SECONDS;
+            const mins = parseInt(minutesInput.value) || DEFAULT_MINUTES;
+            totalSeconds = mins * 60;
+            if (totalSeconds < 0) totalSeconds = 0;
+            remaining = totalSeconds;
             updateDisplay();
             startBtn.textContent = '▶ Старт';
             startBtn.classList.remove('stop');
@@ -502,7 +588,6 @@
                 return;
             }
 
-            // Если время истекло, сбрасываем
             if (remaining <= 0) {
                 resetTimer();
                 return;
@@ -520,13 +605,9 @@
                 if (remaining <= 0) {
                     stopTimer();
                     playBeep();
-                    // Сброс кнопки
                     startBtn.textContent = '▶ Старт';
                     startBtn.classList.remove('stop');
                     startBtn.classList.add('start');
-                    // Можно также показать уведомление
-                    // alert('Время вышло!');
-                    // Звук уже сыграл
                 }
             }, 1000);
         }
@@ -542,11 +623,42 @@
             resetTimer();
         });
 
+        incBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let val = parseInt(minutesInput.value) || 0;
+            val = Math.min(val + 1, 999);
+            minutesInput.value = val;
+            // Если таймер не запущен, обновляем оставшееся время
+            if (!isRunning) {
+                resetTimer();
+            }
+        });
+
+        decBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let val = parseInt(minutesInput.value) || 0;
+            val = Math.max(val - 1, 0);
+            minutesInput.value = val;
+            if (!isRunning) {
+                resetTimer();
+            }
+        });
+
+        minutesInput.addEventListener('change', function(e) {
+            e.stopPropagation();
+            let val = parseInt(this.value) || 0;
+            if (val < 0) val = 0;
+            this.value = val;
+            if (!isRunning) {
+                resetTimer();
+            }
+        });
+
         // Инициализация
         resetTimer();
     })();
 
-    // ===== ДАННЫЕ ПРОГРАММЫ =====
+    // ===== ДАННЫЕ ПРОГРАММЫ И КАСТОМНЫЕ НАЗВАНИЯ =====
     const data = {
         "Стоя": {
             "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
@@ -577,53 +689,150 @@
         }
     };
 
-    // ===== ГЕНЕРАЦИЯ СПИСКА =====
-    const app = document.getElementById('app');
-    let totalItems = 0;
-    const techNames = [];
-
-    function esc(str) {
-        return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-
-    let html = '';
-    let sectionIndex = 0;
-    for (const [sectionTitle, subs] of Object.entries(data)) {
-        sectionIndex++;
-        html += `<div class="section"><div class="section-title"><span class="section-num">${sectionIndex}</span> ${sectionTitle}</div>`;
-        for (const [subTitle, items] of Object.entries(subs)) {
-            html += `<div class="subsection"><div class="subsection-title">${subTitle}</div><ul>`;
-            for (const techName of items) {
-                totalItems++;
-                const inputId = `video-${totalItems}`;
-                const escapedName = esc(techName);
-                techNames.push(techName);
-                html += `
-                    <li data-idx="${totalItems - 1}" class="tech-item">
-                        <div class="tech-line">
-                            <span class="tech-name">${techName}</span>
-                            <span class="video-btn-group">
-                                <button class="btn-video link-btn link-video" data-target="${inputId}">
-                                    <span class="icon">🔗</span> Ссылка
-                                </button>
-                                <button class="btn-video success play-video hidden" data-target="${inputId}">
-                                    <span class="icon">▶</span> Смотреть
-                                </button>
-                            </span>
-                        </div>
-                    </li>
-                `;
+    // ===== ПОЛУЧАЕМ ВСЕ НАЗВАНИЯ В ПЛОСКИЙ МАССИВ =====
+    function extractTechNames() {
+        const names = [];
+        for (const [sectionTitle, subs] of Object.entries(data)) {
+            for (const [subTitle, items] of Object.entries(subs)) {
+                for (const name of items) {
+                    names.push(name);
+                }
             }
-            html += `</ul></div>`;
         }
-        html += `</div>`;
+        return names;
     }
-    app.innerHTML = html;
 
-    document.getElementById('totalCount').textContent = totalItems;
-    document.getElementById('totalCountDisplay').textContent = totalItems;
+    const defaultNames = extractTechNames();
+    const totalItems = defaultNames.length;
 
-    // ===== СОСТОЯНИЕ =====
+    // ===== КАСТОМНЫЕ НАЗВАНИЯ (localStorage) =====
+    const CUSTOM_NAMES_KEY = 'ronin_custom_names';
+
+    function loadCustomNames() {
+        const saved = localStorage.getItem(CUSTOM_NAMES_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length === totalItems) {
+                    return parsed;
+                }
+            } catch (e) {}
+        }
+        return [...defaultNames];
+    }
+
+    let customNames = loadCustomNames();
+
+    function saveCustomNames() {
+        localStorage.setItem(CUSTOM_NAMES_KEY, JSON.stringify(customNames));
+    }
+
+    function getDisplayName(index) {
+        return customNames[index] || defaultNames[index] || 'Техника';
+    }
+
+    function updateTechName(index, newName) {
+        if (index < 0 || index >= totalItems) return;
+        customNames[index] = newName.trim() || defaultNames[index] || 'Техника';
+        saveCustomNames();
+        renderTechList();
+        updateAll(); // обновить состояние после перерисовки
+    }
+
+    // ===== ГЕНЕРАЦИЯ СПИСКА (с поддержкой редактирования) =====
+    function renderTechList() {
+        const app = document.getElementById('app');
+        let html = '';
+        let sectionIndex = 0;
+        let idx = 0;
+        for (const [sectionTitle, subs] of Object.entries(data)) {
+            sectionIndex++;
+            html += `<div class="section"><div class="section-title"><span class="section-num">${sectionIndex}</span> ${sectionTitle}</div>`;
+            for (const [subTitle, items] of Object.entries(subs)) {
+                html += `<div class="subsection"><div class="subsection-title">${subTitle}</div><ul>`;
+                for (const techName of items) {
+                    const displayName = getDisplayName(idx);
+                    const inputId = `video-${idx+1}`;
+                    html += `
+                        <li data-idx="${idx}" class="tech-item">
+                            <div class="tech-line">
+                                <div class="tech-name-wrapper">
+                                    <span class="tech-name" id="tech-name-${idx}">${displayName}</span>
+                                    <button class="edit-name-btn" data-idx="${idx}" title="Редактировать название">✎</button>
+                                </div>
+                                <span class="video-btn-group">
+                                    <button class="btn-video link-btn link-video" data-target="${inputId}">
+                                        <span class="icon">🔗</span> Ссылка
+                                    </button>
+                                    <button class="btn-video success play-video hidden" data-target="${inputId}">
+                                        <span class="icon">▶</span> Смотреть
+                                    </button>
+                                </span>
+                            </div>
+                        </li>
+                    `;
+                    idx++;
+                }
+                html += `</ul></div>`;
+            }
+            html += `</div>`;
+        }
+        app.innerHTML = html;
+        // Перепривязать обработчики для кнопок редактирования
+        document.querySelectorAll('.edit-name-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const idx = parseInt(this.dataset.idx);
+                startEditing(idx);
+            });
+        });
+        // Обновить состояние после рендера (кнопки видео и прогресс)
+        updateAll();
+    }
+
+    // ===== РЕДАКТИРОВАНИЕ НАЗВАНИЯ =====
+    function startEditing(idx) {
+        const nameSpan = document.getElementById(`tech-name-${idx}`);
+        if (!nameSpan) return;
+        const currentName = getDisplayName(idx);
+        // Создаём input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'tech-name-input';
+        input.value = currentName;
+        input.dataset.idx = idx;
+        // Заменяем span на input
+        const wrapper = nameSpan.parentElement;
+        wrapper.replaceChild(input, nameSpan);
+        input.focus();
+        input.select();
+
+        function finishEditing() {
+            const newName = input.value.trim() || defaultNames[idx] || 'Техника';
+            // Восстанавливаем span
+            const newSpan = document.createElement('span');
+            newSpan.className = 'tech-name';
+            newSpan.id = `tech-name-${idx}`;
+            newSpan.textContent = newName;
+            wrapper.replaceChild(newSpan, input);
+            // Обновляем данные
+            updateTechName(idx, newName);
+        }
+
+        input.addEventListener('blur', finishEditing);
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                input.blur();
+            }
+            if (e.key === 'Escape') {
+                input.value = currentName;
+                input.blur();
+            }
+        });
+    }
+
+    // ===== СОСТОЯНИЕ ПРОГРЕССА И ИСТОРИИ =====
     const PROGRESS_KEY = 'ronin_progress';
     const HISTORY_KEY = 'ronin_history';
     const LINKS_KEY = 'ronin_video_links';
@@ -632,34 +841,6 @@
     let history = [];
     let videoLinks = {};
 
-    // ===== РАБОТА С VIDEO LINKS =====
-    function loadLinks() {
-        const saved = localStorage.getItem(LINKS_KEY);
-        if (saved) {
-            try { videoLinks = JSON.parse(saved); } catch (e) { videoLinks = {}; }
-        } else { videoLinks = {}; }
-        updateLinkCount();
-    }
-    function saveLinks() { localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks)); }
-    function setLink(id, url) {
-        if (url && url.trim() !== '') {
-            videoLinks[id] = url.trim();
-        } else {
-            delete videoLinks[id];
-        }
-        saveLinks();
-        updateLinkCount();
-        updateVideoButtons(id);
-    }
-    function getLink(id) { return videoLinks[id] || null; }
-
-    function updateLinkCount() {
-        const count = Object.keys(videoLinks).length;
-        const el = document.getElementById('linkCount');
-        if (el) el.textContent = count;
-    }
-
-    // ===== ПРОГРЕСС И ИСТОРИЯ =====
     function loadProgress() {
         const saved = localStorage.getItem(PROGRESS_KEY);
         if (saved) {
@@ -672,6 +853,7 @@
         }
     }
     function saveProgress() { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }
+
     function loadHistory() {
         const saved = localStorage.getItem(HISTORY_KEY);
         if (saved) {
@@ -682,7 +864,9 @@
                 } else if (typeof parsed === 'object' && parsed !== null) {
                     const entries = Object.entries(parsed);
                     history = entries.map(([tech, date]) => {
-                        const idx = techNames.indexOf(tech);
+                        // tech может быть старым названием, но мы используем индексы, поэтому пересохраним с индексами
+                        // При загрузке попробуем найти индекс по имени, если не найдём – оставим как есть
+                        const idx = defaultNames.indexOf(tech);
                         return { tech, date, index: idx >= 0 ? idx : 0 };
                     });
                     saveHistory();
@@ -713,7 +897,7 @@
 
     function toggleItem(idx) {
         if (idx < 0 || idx >= totalItems) return;
-        const techName = techNames[idx];
+        const techName = getDisplayName(idx);
         const newStatus = !progress[idx];
         progress[idx] = newStatus;
         if (newStatus) {
@@ -748,7 +932,9 @@
             const dateStr = `${parts[2]}.${parts[1]}.${parts[0]}`;
             let itemsHtml = '';
             for (const entry of entries) {
-                itemsHtml += `<div class="history-item">${entry.tech}</div>`;
+                // Используем актуальное имя
+                const displayTech = getDisplayName(entry.index);
+                itemsHtml += `<div class="history-item">${displayTech}</div>`;
             }
             html += `
                 <div class="history-day">
@@ -780,7 +966,33 @@
         updateAll();
     }
 
-    // ===== ВИДЕО =====
+    // ===== РАБОТА С VIDEO LINKS =====
+    function loadLinks() {
+        const saved = localStorage.getItem(LINKS_KEY);
+        if (saved) {
+            try { videoLinks = JSON.parse(saved); } catch (e) { videoLinks = {}; }
+        } else { videoLinks = {}; }
+        updateLinkCount();
+    }
+    function saveLinks() { localStorage.setItem(LINKS_KEY, JSON.stringify(videoLinks)); }
+    function setLink(id, url) {
+        if (url && url.trim() !== '') {
+            videoLinks[id] = url.trim();
+        } else {
+            delete videoLinks[id];
+        }
+        saveLinks();
+        updateLinkCount();
+        updateVideoButtons(id);
+    }
+    function getLink(id) { return videoLinks[id] || null; }
+
+    function updateLinkCount() {
+        const count = Object.keys(videoLinks).length;
+        const el = document.getElementById('linkCount');
+        if (el) el.textContent = count;
+    }
+
     function updateVideoButtons(id) {
         const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
         if (!playBtn) return;
@@ -816,7 +1028,8 @@
             if (target.classList.contains('play-video')) {
                 const link = getLink(id);
                 if (link) {
-                    const title = document.querySelector(`[data-target="${id}"]`)?.closest('.tech-line')?.querySelector('.tech-name')?.textContent || 'Техника';
+                    const idx = parseInt(id.split('-')[1]) - 1;
+                    const title = getDisplayName(idx);
                     openModal(link, title);
                 } else {
                     alert('Ссылка не установлена.');
@@ -828,6 +1041,8 @@
 
         const li = e.target.closest('.tech-item');
         if (li) {
+            // Игнорируем клик по кнопке редактирования или инпуту
+            if (e.target.closest('.edit-name-btn') || e.target.closest('.tech-name-input')) return;
             const idx = parseInt(li.dataset.idx, 10);
             if (!isNaN(idx)) {
                 toggleItem(idx);
@@ -835,6 +1050,7 @@
         }
     });
 
+    // Обработчики для кнопок "Очистить" и "Сбросить прогресс"
     document.getElementById('clearHistoryBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         clearHistory();
@@ -915,17 +1131,13 @@
         loadHistory();
         loadLinks();
 
-        document.querySelectorAll('[data-target^="video-"]').forEach(el => {
-            const id = el.dataset.target;
-            if (id) updateVideoButtons(id);
-        });
-
+        // Синхронизация прогресса
         let needsSync = false;
         for (let i = 0; i < totalItems; i++) {
             if (progress[i]) {
                 const exists = history.some(entry => entry.index === i);
                 if (!exists) {
-                    history.push({ tech: techNames[i], date: Date.now(), index: i });
+                    history.push({ tech: getDisplayName(i), date: Date.now(), index: i });
                     needsSync = true;
                 }
             }
@@ -934,6 +1146,8 @@
             saveHistory();
         }
 
+        renderTechList();
+        // После рендера обновим кнопки видео и состояние
         updateAll();
     }
 
