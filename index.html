@@ -80,28 +80,95 @@
         .subsection { margin: 12px 0 8px; }
         .subsection-title { font-weight: 600; font-size: 15px; color: #1a1a1a; text-transform: uppercase; letter-spacing: 0.5px; padding: 6px 0 6px 12px; border-left: 4px solid #c0392b; border-bottom: 1px solid #e4e6e8; margin-bottom: 8px; background: #f8f9fa; border-radius: 0 4px 4px 0; }
         ul { list-style: none; padding: 0; margin: 0; }
-        ul li { position: relative; padding: 8px 0 8px 48px; border-bottom: 1px solid #f2f3f5; display: flex; flex-direction: column; gap: 4px; min-height: 44px; cursor: pointer; transition: background 0.15s; user-select: none; -webkit-tap-highlight-color: rgba(192, 57, 43, 0.15); counter-increment: tech-counter; }
+        ul li {
+            position: relative;
+            padding: 8px 0 8px 48px;
+            border-bottom: 1px solid #f2f3f5;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-height: 44px;
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+            -webkit-tap-highlight-color: rgba(192, 57, 43, 0.15);
+            counter-increment: tech-counter;
+        }
         ul li:last-child { border-bottom: none; }
-        ul li::before { content: counter(tech-counter); position: absolute; left: 0; top: 8px; font-weight: 500; font-size: 14px; color: #6f7987; background: #f2f3f5; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 32px; transition: all 0.2s; pointer-events: none; }
+        ul li::before {
+            content: counter(tech-counter);
+            position: absolute;
+            left: 0;
+            top: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #6f7987;
+            background: #f2f3f5;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 32px;
+            transition: all 0.2s;
+            pointer-events: none;
+        }
         ul li.done::before { background: #27ae60; color: #ffffff; content: "✓"; font-size: 18px; }
         ul li.done .tech-name { color: #27ae60; }
         ul li:hover { background: #f8f9fa; }
-        .tech-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; pointer-events: none; }
-        .tech-name { font-weight: 400; font-size: 15px; color: #000000; flex: 1 1 auto; word-break: break-word; transition: color 0.2s; }
-        .video-btn-group { display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto; flex-shrink: 0; pointer-events: auto; }
-        .btn-video { display: inline-flex; align-items: center; justify-content: center; gap: 4px; font-size: 13px; font-weight: 500; padding: 4px 12px; border-radius: 8px; border: none; background: transparent; color: #2d6a9f; cursor: pointer; font-family: inherit; transition: background 0.15s; touch-action: manipulation; user-select: none; white-space: nowrap; min-height: 32px; }
+        .tech-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 12px;
+            pointer-events: none;
+        }
+        .tech-name {
+            font-weight: 400;
+            font-size: 15px;
+            color: #000000;
+            flex: 1 1 auto;
+            word-break: break-word;
+            transition: color 0.2s;
+        }
+        .video-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-left: auto;
+            flex-shrink: 0;
+            pointer-events: auto;
+        }
+        .btn-video {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: #2d6a9f;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s;
+            touch-action: manipulation;
+            user-select: none;
+            white-space: nowrap;
+            min-height: 32px;
+        }
         .btn-video:hover { background: rgba(45, 106, 159, 0.08); }
         .btn-video:active { transform: scale(0.97); }
         .btn-video .icon { font-size: 16px; line-height: 1; }
-        .btn-video.primary { color: #2d6a9f; }
-        .btn-video.primary:hover { background: rgba(45, 106, 159, 0.08); }
-        .btn-video.success { color: #4bb34b; }
-        .btn-video.success:hover { background: rgba(75, 179, 75, 0.08); }
         .btn-video.link-btn { color: #f39c12; }
         .btn-video.link-btn:hover { background: rgba(243, 156, 18, 0.08); }
-        .btn-video.local-btn { color: #8e44ad; }
-        .btn-video.local-btn:hover { background: rgba(142, 68, 173, 0.08); }
-        .file-input-hidden { display: none; }
+        .btn-video.success { color: #4bb34b; }
+        .btn-video.success:hover { background: rgba(75, 179, 75, 0.08); }
+        .btn-video.success.hidden { display: none; }
         .history-section { margin-top: 28px; padding-top: 16px; border-top: 2px solid #e4e6e8; }
         .history-title { font-weight: 600; font-size: 17px; color: #1a1a1a; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .history-empty { color: #6f7987; font-size: 14px; padding: 8px 0; text-align: center; background: #f8f9fa; border-radius: 8px; }
@@ -122,8 +189,7 @@
         .modal-title { font-weight: 600; font-size: 17px; color: #000000; }
         .modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: #6f7987; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; touch-action: manipulation; font-family: inherit; }
         .modal-close:hover { background: #edeef0; }
-        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .modal-body video { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; display: block; max-height: 60vh; object-fit: contain; }
+        .modal-body { padding: 12px 0 0; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
         .modal-body iframe { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; border: none; display: block; max-height: 60vh; }
         .modal-footer { display: flex; justify-content: center; gap: 12px; padding-top: 12px; flex-shrink: 0; }
         .modal-footer .btn-primary { background: #2d6a9f; color: #fff; border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.15s; }
@@ -179,7 +245,7 @@
             .header-sub span { background: #fff; }
             .header-meta { color: #333; }
             .header-meta .badge-blue { background: #1a4a6e; color: #fff; }
-            .btn-video, .file-input-hidden, .modal-overlay, .btn-reset, .btn-clear-history { display: none !important; }
+            .btn-video, .modal-overlay, .btn-reset, .btn-clear-history { display: none !important; }
             ul li { border-bottom-color: #ccc; cursor: default; }
             ul li::before { background: #eee; color: #000; }
             ul li.done::before { background: #27ae60; color: #fff; content: "✓"; }
@@ -235,7 +301,7 @@
     </div>
 
     <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #edeef0; text-align: center; color: #6f7987; font-size: 13px;">
-        Нажмите «Выбрать» для загрузки видео · «Ссылка» для вставки URL · «Смотреть» для просмотра
+        Нажмите «Ссылка» для добавления URL · «Смотреть» для просмотра во встроенном плеере
     </div>
 </div>
 
@@ -247,10 +313,6 @@
             <button class="modal-close" id="modalClose">✕</button>
         </div>
         <div class="modal-body">
-            <video id="modalVideo" controls playsinline preload="metadata" style="display:none;">
-                <source id="modalSource" src="" type="video/mp4">
-                Ваш браузер не поддерживает видео.
-            </video>
             <iframe id="modalIframe" src="" style="display:none; width:100%; aspect-ratio:16/9; border:none; border-radius:8px; background:#000;" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="modal-footer">
@@ -261,26 +323,22 @@
 
 <script>
     // ===== ФИКСИРОВАННАЯ ВЕРСИЯ =====
-    const APP_VERSION = '0.5'; // меняйте при каждом обновлении
-
-    // Отображаем версию
+    const APP_VERSION = '0.6';
     document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
 
-    // ===== SERVICE WORKER с автоматическим обновлением =====
-    // При регистрации добавляем параметр версии, чтобы загружать новый sw.js
+    // ===== SERVICE WORKER с версией =====
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             navigator.serviceWorker.register(`sw.js?v=${APP_VERSION}`)
                 .then(reg => {
                     console.log('SW зарегистрирован, версия:', APP_VERSION);
-                    // Проверяем обновления
                     reg.update();
                 })
                 .catch(err => console.log('SW ошибка:', err));
         });
     }
 
-    // ===== ДАННЫЕ ПРОГРАММЫ (без изменений) =====
+    // ===== ДАННЫЕ ПРОГРАММЫ =====
     const data = {
         "Стоя": {
             "Броски": ["Задняя подножка","Подхват под одну ногу","Подсад","Флай армбар"],
@@ -337,21 +395,14 @@
                         <div class="tech-line">
                             <span class="tech-name">${techName}</span>
                             <span class="video-btn-group">
-                                <button class="btn-video primary pick-video" data-target="${inputId}">
-                                    <span class="icon">📁</span> Выбрать
-                                </button>
                                 <button class="btn-video link-btn link-video" data-target="${inputId}">
                                     <span class="icon">🔗</span> Ссылка
                                 </button>
-                                <button class="btn-video success play-video" data-target="${inputId}" style="display:none;">
-                                    <span class="icon">▶</span> Смотреть (ссылка)
-                                </button>
-                                <button class="btn-video local-btn play-local-video" data-target="${inputId}" style="display:none;">
-                                    <span class="icon">📁</span> Смотреть локально
+                                <button class="btn-video success play-video hidden" data-target="${inputId}">
+                                    <span class="icon">▶</span> Смотреть
                                 </button>
                             </span>
                         </div>
-                        <input type="file" accept="video/*" class="file-input-hidden" id="${inputId}" data-label="${escapedName}">
                     </li>
                 `;
             }
@@ -438,8 +489,10 @@
         });
 
         renderHistory();
-        document.querySelectorAll('.file-input-hidden').forEach(input => {
-            updateVideoButtons(input.id);
+        // Обновляем кнопки
+        document.querySelectorAll('[data-target^="video-"]').forEach(el => {
+            const id = el.dataset.target;
+            if (id) updateVideoButtons(id);
         });
     }
 
@@ -512,127 +565,34 @@
         updateAll();
     }
 
-    // ===== РАБОТА С INDEXEDDB =====
-    const DB_NAME = 'RoninVideoDB';
-    const STORE_NAME = 'videos';
-    let db = null;
-
-    function openDB() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(DB_NAME, 1);
-            request.onupgradeneeded = function(e) {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                }
-            };
-            request.onsuccess = function(e) {
-                db = e.target.result;
-                resolve(db);
-            };
-            request.onerror = function(e) {
-                reject(e.target.error);
-            };
-        });
-    }
-
-    function saveVideoToDB(id, file) {
-        return new Promise((resolve, reject) => {
-            if (!db) return reject('База не открыта');
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const blob = e.target.result;
-                const record = { id: id, data: blob };
-                const request = store.put(record);
-                request.onsuccess = function() { resolve(); };
-                request.onerror = function() { reject(request.error); };
-            };
-            reader.onerror = function() { reject(reader.error); };
-            reader.readAsArrayBuffer(file);
-        });
-    }
-
-    function getVideoFromDB(id) {
-        return new Promise((resolve, reject) => {
-            if (!db) return reject('База не открыта');
-            const transaction = db.transaction([STORE_NAME], 'readonly');
-            const store = transaction.objectStore(STORE_NAME);
-            const request = store.get(id);
-            request.onsuccess = function(e) {
-                const record = e.target.result;
-                if (record) {
-                    const blob = new Blob([record.data], { type: 'video/mp4' });
-                    const url = URL.createObjectURL(blob);
-                    resolve(url);
-                } else {
-                    resolve(null);
-                }
-            };
-            request.onerror = function() { reject(request.error); };
-        });
-    }
-
-    function deleteVideoFromDB(id) {
-        return new Promise((resolve, reject) => {
-            if (!db) return reject('База не открыта');
-            const transaction = db.transaction([STORE_NAME], 'readwrite');
-            const store = transaction.objectStore(STORE_NAME);
-            const request = store.delete(id);
-            request.onsuccess = function() { resolve(); };
-            request.onerror = function() { reject(request.error); };
-        });
-    }
-
     // ===== ВИДЕО =====
-    const videoMap = new Map();
-    let selectedCount = 0;
-
-    function updateSelectedCount() {
-        const el = document.getElementById('selectedCount');
-        if (el) el.textContent = selectedCount;
-    }
-
     function updateVideoButtons(id) {
-        const playLinkBtn = document.querySelector(`.play-video[data-target="${id}"]`);
-        const playLocalBtn = document.querySelector(`.play-local-video[data-target="${id}"]`);
-        const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
-        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
-        if (!playLinkBtn || !playLocalBtn || !linkBtn) return;
-
+        const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
+        if (!playBtn) return;
         const link = getLink(id);
-        const hasFile = videoMap.has(id);
-
-        linkBtn.style.display = 'inline-flex';
-
         if (link) {
-            playLinkBtn.style.display = 'inline-flex';
-            playLinkBtn.dataset.type = 'link';
-            playLinkBtn.innerHTML = '<span class="icon">▶</span> Смотреть (ссылка)';
+            playBtn.classList.remove('hidden');
+            playBtn.style.display = 'inline-flex';
         } else {
-            playLinkBtn.style.display = 'none';
-        }
-
-        if (hasFile) {
-            playLocalBtn.style.display = 'inline-flex';
-            playLocalBtn.dataset.type = 'file';
-            playLocalBtn.innerHTML = '<span class="icon">📁</span> Смотреть локально';
-        } else {
-            playLocalBtn.style.display = 'none';
-        }
-
-        if (pickBtn) {
-            if (link || hasFile) {
-                pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
-            } else {
-                pickBtn.innerHTML = '<span class="icon">📁</span> Выбрать';
-            }
+            playBtn.classList.add('hidden');
+            playBtn.style.display = 'none';
         }
     }
 
     // ===== ОБРАБОТЧИКИ =====
+    // Клик по строке техники (переключение статуса)
     document.addEventListener('click', function(e) {
+        const li = e.target.closest('.tech-item');
+        if (li) {
+            // Проверяем, не был ли клик по кнопке внутри
+            if (e.target.closest('.btn-video')) return;
+            const idx = parseInt(li.dataset.idx, 10);
+            if (!isNaN(idx)) {
+                toggleItem(idx);
+            }
+            return;
+        }
+        // Обработка кнопок
         const target = e.target.closest('.btn-video');
         if (!target) return;
         e.stopPropagation();
@@ -640,15 +600,9 @@
         const id = target.dataset.target;
         if (!id) return;
 
-        if (target.classList.contains('pick-video')) {
-            const input = document.getElementById(id);
-            if (input) input.click();
-            return;
-        }
-
         if (target.classList.contains('link-video')) {
             const currentLink = getLink(id);
-            let newLink = prompt('Введите ссылку на видео (YouTube, Vimeo, или прямой URL):\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
+            let newLink = prompt('Введите ссылку на видео (YouTube, Vimeo, Яндекс.Диск и т.д.):\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
             if (newLink !== null) {
                 if (newLink.trim() === '') newLink = null;
                 setLink(id, newLink);
@@ -660,132 +614,33 @@
         if (target.classList.contains('play-video')) {
             const link = getLink(id);
             if (link) {
-                const title = document.getElementById(id)?.dataset.label || 'Техника';
-                openModalForLink(link, title);
+                const title = document.querySelector(`[data-target="${id}"]`)?.closest('.tech-line')?.querySelector('.tech-name')?.textContent || 'Техника';
+                openModal(link, title);
                 return;
             }
             alert('Ссылка не установлена.');
             return;
         }
-
-        if (target.classList.contains('play-local-video')) {
-            const stored = videoMap.get(id);
-            if (stored && stored.url) {
-                const input = document.getElementById(id);
-                const title = input ? input.dataset.label : 'Техника';
-                openModalForFile(stored.url, title);
-                return;
-            }
-            alert('Локальное видео не найдено.');
-            return;
-        }
     });
 
-    document.addEventListener('change', async function(e) {
-        const input = e.target.closest('.file-input-hidden');
-        if (!input) return;
-        const id = input.id;
-        const file = input.files[0];
-        if (!file) {
-            try {
-                await deleteVideoFromDB(id);
-                if (videoMap.has(id)) {
-                    const old = videoMap.get(id);
-                    if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
-                    videoMap.delete(id);
-                    selectedCount--;
-                    updateSelectedCount();
-                    updateVideoButtons(id);
-                }
-            } catch (err) { console.error(err); }
-            return;
-        }
-
-        try {
-            await saveVideoToDB(id, file);
-            const url = URL.createObjectURL(file);
-            if (videoMap.has(id)) {
-                const old = videoMap.get(id);
-                if (old.url && !old.fromDB) URL.revokeObjectURL(old.url);
-            } else {
-                selectedCount++;
-            }
-            videoMap.set(id, { url, fromDB: false });
-            updateSelectedCount();
-            updateVideoButtons(id);
-        } catch (err) {
-            console.error(err);
-            alert('Не удалось сохранить видео.');
-        }
-    });
-
-    // ===== МОДАЛЬНОЕ ОКНО =====
+    // ===== МОДАЛЬНОЕ ОКНО (только iframe) =====
     const modal = document.getElementById('videoModal');
-    const videoEl = document.getElementById('modalVideo');
-    const sourceEl = document.getElementById('modalSource');
     const iframeEl = document.getElementById('modalIframe');
     const titleEl = document.getElementById('modalTitle');
     const closeBtn = document.getElementById('modalClose');
     const closeBtn2 = document.getElementById('modalCloseBtn');
 
-    function openModalForFile(url, title) {
-        videoEl.style.display = 'block';
-        iframeEl.style.display = 'none';
-        sourceEl.src = url;
-        videoEl.load();
-        titleEl.textContent = title || 'Видео (локальное)';
+    function openModal(url, title) {
+        iframeEl.src = url;
+        iframeEl.style.display = 'block';
+        titleEl.textContent = title || 'Видео';
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        videoEl.play().catch(() => {});
-    }
-
-    function openModalForLink(link, title) {
-        const isYouTube = link.match(/(youtube\.com|youtu\.be)/);
-        const isVimeo = link.match(/vimeo\.com/);
-
-        if (isYouTube || isVimeo) {
-            let embedUrl = link;
-            if (isYouTube) {
-                const videoId = link.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
-                if (videoId) {
-                    embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-                }
-            } else if (isVimeo) {
-                const videoId = link.match(/vimeo\.com\/(\d+)/);
-                if (videoId) {
-                    embedUrl = `https://player.vimeo.com/video/${videoId[1]}`;
-                }
-            }
-            iframeEl.src = embedUrl;
-            iframeEl.style.display = 'block';
-            videoEl.style.display = 'none';
-            titleEl.textContent = title || 'Видео (ссылка)';
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        } else {
-            const ext = link.split('.').pop().toLowerCase();
-            if (['mp4', 'webm', 'ogg', 'mov', 'avi'].includes(ext)) {
-                videoEl.style.display = 'block';
-                iframeEl.style.display = 'none';
-                sourceEl.src = link;
-                videoEl.load();
-                titleEl.textContent = title || 'Видео (прямая ссылка)';
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-                videoEl.play().catch(() => {});
-            } else {
-                window.open(link, '_blank');
-            }
-        }
     }
 
     function closeModal() {
         modal.classList.remove('active');
-        videoEl.pause();
-        sourceEl.src = '';
-        videoEl.load();
         iframeEl.src = '';
-        videoEl.style.display = 'none';
         iframeEl.style.display = 'none';
         document.body.style.overflow = '';
     }
@@ -799,60 +654,37 @@
         if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
     });
 
-    window.addEventListener('beforeunload', function() {
-        for (const [id, stored] of videoMap) {
-            if (stored.url && !stored.fromDB) URL.revokeObjectURL(stored.url);
-        }
-    });
-
-    const statsBar = document.querySelector('.stats-bar');
-    const videoStat = document.createElement('div');
-    videoStat.className = 'stats-item';
-    videoStat.innerHTML = `<span class="num" id="selectedCount">0</span> видео выбрано`;
-    statsBar.appendChild(videoStat);
-
     // ===== ИНИЦИАЛИЗАЦИЯ =====
-    async function init() {
-        try {
-            await openDB();
-            loadProgress();
-            loadHistory();
-            loadLinks();
+    function init() {
+        loadProgress();
+        loadHistory();
+        loadLinks();
 
-            const inputs = document.querySelectorAll('.file-input-hidden');
-            for (const input of inputs) {
-                const id = input.id;
-                const url = await getVideoFromDB(id);
-                if (url) {
-                    videoMap.set(id, { url, fromDB: true });
-                    selectedCount++;
-                }
-                updateVideoButtons(id);
-            }
-            updateSelectedCount();
+        // Обновить все кнопки
+        document.querySelectorAll('[data-target^="video-"]').forEach(el => {
+            const id = el.dataset.target;
+            if (id) updateVideoButtons(id);
+        });
 
-            let needsSync = false;
-            for (let i = 0; i < totalItems; i++) {
-                if (progress[i]) {
-                    const exists = history.some(entry => entry.index === i);
-                    if (!exists) {
-                        history.push({ tech: techNames[i], date: Date.now(), index: i });
-                        needsSync = true;
-                    }
+        // Синхронизация прогресса
+        let needsSync = false;
+        for (let i = 0; i < totalItems; i++) {
+            if (progress[i]) {
+                const exists = history.some(entry => entry.index === i);
+                if (!exists) {
+                    history.push({ tech: techNames[i], date: Date.now(), index: i });
+                    needsSync = true;
                 }
             }
-            if (needsSync) {
-                saveHistory();
-            }
-
-            updateAll();
-        } catch (err) {
-            console.error('Ошибка инициализации:', err);
-            alert('При загрузке приложения произошла ошибка. Попробуйте перезапустить.');
         }
+        if (needsSync) {
+            saveHistory();
+        }
+
+        updateAll();
     }
 
-    init().catch(console.error);
+    init();
 </script>
 </body>
 </html>
