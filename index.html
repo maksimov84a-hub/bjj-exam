@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (те же, что и раньше, без изменений) ===== */
+        /* ===== СТИЛИ (без изменений) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -245,7 +245,7 @@
 </div>
 
 <script>
-    // ===== ДАННЫЕ ПРОГРАММЫ =====
+    // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
     const data = {
         "Стоя": {
             "Броски": [
@@ -474,7 +474,8 @@
         });
 
         renderHistory();
-        // Обновить все кнопки видео
+
+        // Обновить кнопки для всех техник
         document.querySelectorAll('.file-input-hidden').forEach(input => {
             updateVideoButtons(input.id);
         });
@@ -639,10 +640,14 @@
     function updateVideoButtons(id) {
         const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
         const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
-        if (!playBtn) return;
+        const linkBtn = document.querySelector(`.link-video[data-target="${id}"]`);
+        if (!playBtn || !linkBtn) return;
 
         const link = getLink(id);
         const hasFile = videoMap.has(id);
+
+        // Кнопка "Ссылка" всегда видна
+        linkBtn.style.display = 'inline-flex';
 
         if (link) {
             playBtn.style.display = 'inline-flex';
@@ -655,11 +660,13 @@
         } else {
             playBtn.style.display = 'none';
         }
-        // Если есть ссылка или файл, меняем текст кнопки "Выбрать" на "Изменить"
-        if (pickBtn && (link || hasFile)) {
-            pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
-        } else if (pickBtn) {
-            pickBtn.innerHTML = '<span class="icon">📁</span> Выбрать';
+
+        if (pickBtn) {
+            if (link || hasFile) {
+                pickBtn.innerHTML = '<span class="icon">📁</span> Изменить';
+            } else {
+                pickBtn.innerHTML = '<span class="icon">📁</span> Выбрать';
+            }
         }
     }
 
@@ -690,8 +697,6 @@
                     newLink = null;
                 }
                 setLink(id, newLink);
-                // Если ссылка добавлена, и есть файл – кнопка "Смотреть" покажет ссылку
-                // Если ссылка удалена, и есть файл – покажет файл
                 updateVideoButtons(id);
             }
             return;
@@ -701,7 +706,6 @@
         if (target.classList.contains('play-video')) {
             const link = getLink(id);
             if (link) {
-                // Открываем ссылку в новой вкладке
                 window.open(link, '_blank');
                 return;
             }
@@ -806,42 +810,45 @@
 
     // ===== ИНИЦИАЛИЗАЦИЯ =====
     async function init() {
-        await openDB();
-        loadProgress();
-        loadHistory();
-        loadLinks();
+        try {
+            await openDB();
+            loadProgress();
+            loadHistory();
+            loadLinks();
 
-        // Восстановление файлов из IndexedDB
-        const inputs = document.querySelectorAll('.file-input-hidden');
-        for (const input of inputs) {
-            const id = input.id;
-            const url = await getVideoFromDB(id);
-            if (url) {
-                videoMap.set(id, { url, fromDB: true });
-                selectedCount++;
+            // Восстановление файлов из IndexedDB
+            const inputs = document.querySelectorAll('.file-input-hidden');
+            for (const input of inputs) {
+                const id = input.id;
+                const url = await getVideoFromDB(id);
+                if (url) {
+                    videoMap.set(id, { url, fromDB: true });
+                    selectedCount++;
+                }
+                // Обновляем кнопки для каждого (даже если нет файла)
+                updateVideoButtons(id);
             }
-            // Обновляем кнопки для каждого (даже если нет файла)
-            updateVideoButtons(id);
-        }
-        updateSelectedCount();
+            updateSelectedCount();
 
-        // Синхронизация прогресса
-        let needsSync = false;
-        for (let i = 0; i < totalItems; i++) {
-            if (progress[i]) {
-                const exists = history.some(entry => entry.index === i);
-                if (!exists) {
-                    history.push({ tech: techNames[i], date: Date.now(), index: i });
-                    needsSync = true;
+            // Синхронизация прогресса
+            let needsSync = false;
+            for (let i = 0; i < totalItems; i++) {
+                if (progress[i]) {
+                    const exists = history.some(entry => entry.index === i);
+                    if (!exists) {
+                        history.push({ tech: techNames[i], date: Date.now(), index: i });
+                        needsSync = true;
+                    }
                 }
             }
-        }
-        if (needsSync) {
-            saveHistory();
-        }
+            if (needsSync) {
+                saveHistory();
+            }
 
-        updateAll();
-        // Убираем текстовый лейбл "нажмите на номер" если нужно
+            updateAll();
+        } catch (err) {
+            console.error('Ошибка инициализации:', err);
+        }
     }
 
     init().catch(console.error);
