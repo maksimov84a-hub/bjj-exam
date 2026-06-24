@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        /* ===== СТИЛИ (без изменений) ===== */
+        /* ===== СТИЛИ (БЕЗ ИЗМЕНЕНИЙ) ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, system-ui, 'Helvetica Neue', Roboto, Arial, sans-serif;
@@ -32,7 +32,6 @@
             padding: 20px 20px 16px;
             position: relative;
         }
-        /* ===== СЧЁТЧИК ВЕРСИЙ (левый верхний угол) ===== */
         .version-badge {
             position: absolute;
             top: 8px;
@@ -192,8 +191,8 @@
 </head>
 <body>
 <div class="container">
-    <!-- СЧЁТЧИК ВЕРСИЙ (левый верхний угол) -->
-    <div class="version-badge" id="versionBadge">v0.1</div>
+    <!-- СЧЁТЧИК ВЕРСИЙ (фиксированное значение из кода) -->
+    <div class="version-badge" id="versionBadge"></div>
 
     <!-- ШАПКА -->
     <div class="header">
@@ -263,14 +262,35 @@
 </div>
 
 <script>
-    // ===== СЧЁТЧИК ВЕРСИЙ (увеличиваем при каждом запуске) =====
-    (function updateVersion() {
-        const key = 'ronin_app_version';
-        let version = parseFloat(localStorage.getItem(key)) || 0.09; // начинаем с 0.09, чтобы после +0.01 стало 0.1
-        version = Math.round((version + 0.01) * 100) / 100;
-        localStorage.setItem(key, version);
-        document.getElementById('versionBadge').textContent = 'v' + version.toFixed(2);
-    })();
+    // ===== ФИКСИРОВАННАЯ ВЕРСИЯ ПРИЛОЖЕНИЯ =====
+    // ПРИ КАЖДОМ ОБНОВЛЕНИИ ФАЙЛА МЕНЯЙТЕ ЭТО ЗНАЧЕНИЕ (например, "0.2", "0.3" и т.д.)
+    const APP_VERSION = '0.2';
+
+    // Отображаем версию в левом верхнем углу
+    document.getElementById('versionBadge').textContent = 'v' + APP_VERSION;
+
+    // ===== Service Worker: обновляем кэш при смене версии =====
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('sw.js')
+                .then(function(registration) {
+                    console.log('Service Worker зарегистрирован. Версия:', APP_VERSION);
+                    // Если есть обновление, принудительно обновляем
+                    if (registration.waiting) {
+                        // Если есть ожидающий worker, сообщаем пользователю
+                        console.log('Есть обновление Service Worker');
+                    }
+                })
+                .catch(function(err) {
+                    console.log('Ошибка регистрации Service Worker:', err);
+                });
+
+            // Автоматическое обновление при появлении новой версии
+            navigator.serviceWorker.ready.then(function(registration) {
+                registration.update();
+            });
+        });
+    }
 
     // ===== ДАННЫЕ ПРОГРАММЫ (БЕЗ ИЗМЕНЕНИЙ) =====
     const data = {
@@ -654,8 +674,8 @@
         });
     }
 
-    // ===== ВИДЕО (глобальные переменные) =====
-    const videoMap = new Map(); // id -> { url, fromDB }
+    // ===== ВИДЕО =====
+    const videoMap = new Map();
     let selectedCount = 0;
 
     function updateSelectedCount() {
@@ -663,7 +683,6 @@
         if (el) el.textContent = selectedCount;
     }
 
-    // Функция обновления кнопки "Смотреть" для одного id
     function updateVideoButtons(id) {
         const playBtn = document.querySelector(`.play-video[data-target="${id}"]`);
         const pickBtn = document.querySelector(`.pick-video[data-target="${id}"]`);
@@ -673,7 +692,6 @@
         const link = getLink(id);
         const hasFile = videoMap.has(id);
 
-        // Кнопка "Ссылка" всегда видна
         linkBtn.style.display = 'inline-flex';
 
         if (link) {
@@ -697,7 +715,7 @@
         }
     }
 
-    // ===== ОБРАБОТЧИКИ (делегирование) =====
+    // ===== ОБРАБОТЧИКИ =====
     document.addEventListener('click', function(e) {
         const target = e.target.closest('.btn-video');
         if (!target) return;
@@ -706,30 +724,23 @@
         const id = target.dataset.target;
         if (!id) return;
 
-        // Кнопка "Выбрать"
         if (target.classList.contains('pick-video')) {
             const input = document.getElementById(id);
-            if (input) {
-                input.click();
-            }
+            if (input) input.click();
             return;
         }
 
-        // Кнопка "Ссылка"
         if (target.classList.contains('link-video')) {
             const currentLink = getLink(id);
             let newLink = prompt('Введите ссылку на видео (YouTube, Яндекс.Диск и т.д.)\nЧтобы удалить ссылку, оставьте поле пустым:', currentLink || '');
             if (newLink !== null) {
-                if (newLink.trim() === '') {
-                    newLink = null;
-                }
+                if (newLink.trim() === '') newLink = null;
                 setLink(id, newLink);
                 updateVideoButtons(id);
             }
             return;
         }
 
-        // Кнопка "Смотреть"
         if (target.classList.contains('play-video')) {
             const link = getLink(id);
             if (link) {
@@ -748,14 +759,12 @@
         }
     });
 
-    // Обработка выбора файла (через событие change)
     document.addEventListener('change', function(e) {
         const input = e.target.closest('.file-input-hidden');
         if (!input) return;
         const id = input.id;
         const file = input.files[0];
         if (!file) {
-            // Файл удалён
             deleteVideoFromDB(id).then(() => {
                 if (videoMap.has(id)) {
                     const old = videoMap.get(id);
@@ -769,7 +778,6 @@
             return;
         }
 
-        // Сохраняем файл
         saveVideoToDB(id, file).then(() => {
             const url = URL.createObjectURL(file);
             videoMap.set(id, { url, fromDB: false });
@@ -817,23 +825,11 @@
         }
     });
 
-    // Добавляем счётчик видео в статистику
     const statsBar = document.querySelector('.stats-bar');
     const videoStat = document.createElement('div');
     videoStat.className = 'stats-item';
     videoStat.innerHTML = `<span class="num" id="selectedCount">0</span> видео выбрано`;
     statsBar.appendChild(videoStat);
-
-    // ===== SERVICE WORKER =====
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-            navigator.serviceWorker.register('sw.js').then(function(registration) {
-                console.log('Service Worker зарегистрирован');
-            }).catch(function(err) {
-                console.log('Ошибка регистрации Service Worker:', err);
-            });
-        });
-    }
 
     // ===== ИНИЦИАЛИЗАЦИЯ =====
     async function init() {
@@ -843,7 +839,6 @@
             loadHistory();
             loadLinks();
 
-            // Восстановление файлов из IndexedDB
             const inputs = document.querySelectorAll('.file-input-hidden');
             for (const input of inputs) {
                 const id = input.id;
@@ -852,12 +847,10 @@
                     videoMap.set(id, { url, fromDB: true });
                     selectedCount++;
                 }
-                // Обновляем кнопки для каждого (даже если нет файла)
                 updateVideoButtons(id);
             }
             updateSelectedCount();
 
-            // Синхронизация прогресса
             let needsSync = false;
             for (let i = 0; i < totalItems; i++) {
                 if (progress[i]) {

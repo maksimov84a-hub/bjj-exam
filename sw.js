@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bjj-exam-v1';
+const CACHE_NAME = 'bjj-exam-v2';
 const urlsToCache = [
   'index.html',
   'manifest.json'
